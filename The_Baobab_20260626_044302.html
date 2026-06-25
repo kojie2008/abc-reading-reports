@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>朗读评测报告 - 小雨</title>
+<style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+        font-family: -apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif;
+        background: #f5f7fa;
+        color: #333;
+        padding: 20px;
+        max-width: 900px;
+        margin: 0 auto;
+    }
+    .header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border-radius: 16px;
+        padding: 30px;
+        margin-bottom: 20px;
+        position: relative;
+        overflow: hidden;
+    }
+    .header h1 { font-size: 24px; margin-bottom: 8px; }
+    .header .meta { font-size: 14px; opacity: 0.9; }
+    .score-overview {
+        background: white;
+        border-radius: 16px;
+        padding: 24px;
+        margin-bottom: 20px;
+        box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+    }
+    .score-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 16px;
+        margin-top: 16px;
+    }
+    .score-item {
+        text-align: center;
+        padding: 16px;
+        background: #f8f9ff;
+        border-radius: 12px;
+    }
+    .score-item .number {
+        font-size: 32px;
+        font-weight: bold;
+        color: #667eea;
+    }
+    .score-item .label {
+        font-size: 13px;
+        color: #999;
+        margin-top: 4px;
+    }
+    .score-item .number.good { color: #22c55e; }
+    .score-item .number.ok { color: #eab308; }
+    .score-item .number.bad { color: #ef4444; }
+    .page-block {
+        background: white;
+        border-radius: 12px;
+        padding: 16px 20px;
+        margin-bottom: 12px;
+        box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+        border-left: 4px solid #667eea;
+    }
+    .page-header { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
+    .page-num { font-weight: bold; font-size: 15px; }
+    .page-accuracy { margin-left: auto; font-size: 13px; color: #666; }
+    .badge {
+        display: inline-block;
+        padding: 2px 8px;
+        border-radius: 10px;
+        font-size: 11px;
+        font-weight: bold;
+        color: white;
+    }
+    .badge-sub { background: #f59e0b; }
+    .badge-del { background: #ef4444; }
+    .badge-ins { background: #8b5cf6; }
+    .page-original { font-size: 14px; line-height: 1.6; margin-bottom: 8px; color: #444; }
+    .page-marked { font-size: 14px; line-height: 1.6; margin-bottom: 8px; color: #555; }
+    .error-section { margin-top: 8px; font-size: 13px; }
+    .error-label { font-weight: bold; color: #666; margin-right: 4px; }
+    .word-error { color: #f59e0b; font-weight: bold; }
+    .word-wrong { color: #999; text-decoration: line-through; }
+    .word-deleted { color: #ef4444; text-decoration: line-through; }
+    .word-inserted { color: #8b5cf6; font-style: italic; }
+    .word-section { margin-top: 20px; }
+    .word-section h3 { font-size: 16px; margin-bottom: 12px; }
+    .word-card {
+        display: inline-block;
+        padding: 6px 12px;
+        margin: 4px;
+        border-radius: 8px;
+        font-size: 14px;
+        background: #fef3c7;
+        border: 1px solid #f59e0b;
+    }
+    .word-card.del-card { background: #fee2e2; border-color: #ef4444; }
+    .footer { text-align: center; color: #999; font-size: 12px; margin-top: 30px; }
+</style>
+</head>
+<body>
+<div class="header">
+    <h1>📖 小雨 的朗读评测报告</h1>
+    <div class="meta">
+        绘本: 《The Baobab》 | Level: M | 第 942 个作品
+    </div>
+    <div class="meta" style="margin-top:4px">
+        ABC Reading 平台评分: 92 分 | 统计时间: 2026-06-26 04:43
+    </div>
+</div>
+
+<div class="score-overview">
+    <h2>📊 整体评分</h2>
+    <div class="score-grid">
+        <div class="score-item">
+            <div class="number good">67.3%</div>
+            <div class="label">单词准确率</div>
+        </div>
+        <div class="score-item">
+            <div class="number">372/553</div>
+            <div class="label">正确单词数</div>
+        </div>
+        <div class="score-item">
+            <div class="number ok">165</div>
+            <div class="label">读错(替换)的单词</div>
+        </div>
+        <div class="score-item">
+            <div class="number bad">16</div>
+            <div class="label">漏读的单词</div>
+        </div>
+        <div class="score-item">
+            <div class="number">81</div>
+            <div class="label">多读的单词</div>
+        </div>
+    </div>
+</div>
+
+<div class="word-section"><h3>读错的单词</h3><div class="word-card error-card"><strong>barrel-shaped</strong> → 读成 "big"</div><div class="word-card error-card"><strong>bats</strong> → 读成 "that"</div><div class="word-card error-card"><strong>with</strong> → 读成 "baked"</div><div class="word-card error-card"><strong>warmer</strong> → 读成 "worse"</div><div class="word-card error-card"><strong>baobabs</strong> → 读成 "bob, for, but"</div><div class="word-card error-card"><strong>long</strong> → 读成 "drones, let"</div><div class="word-card error-card"><strong>18</strong> → 读成 "mid"</div><div class="word-card error-card"><strong>stood</strong> → 读成 "due"</div><div class="word-card error-card"><strong>insects</strong> → 读成 "in"</div><div class="word-card error-card"><strong>spread</strong> → 读成 "branched"</div><div class="word-card error-card"><strong>sheds</strong> → 读成 "shade"</div><div class="word-card error-card"><strong>nine</strong> → 读成 "night"</div><div class="word-card error-card"><strong>africa</strong> → 读成 "every, african"</div><div class="word-card error-card"><strong>one</strong> → 读成 "2000"</div><div class="word-card error-card"><strong>fruit</strong> → 读成 "bob, fruits"</div><div class="word-card error-card"><strong>attach</strong> → 读成 "attack"</div><div class="word-card error-card"><strong>wildlife</strong> → 读成 "wild"</div><div class="word-card error-card"><strong>lizards</strong> → 读成 "fact"</div><div class="word-card error-card"><strong>covers</strong> → 读成 "over"</div><div class="word-card error-card"><strong>hard</strong> → 读成 "heart"</div><div class="word-card error-card"><strong>sorts</strong> → 读成 "shout"</div><div class="word-card error-card"><strong>known</strong> → 读成 "know"</div><div class="word-card error-card"><strong>earth</strong> → 读成 "it's"</div><div class="word-card error-card"><strong>strange</strong> → 读成 "strained, drenched"</div><div class="word-card error-card"><strong>makes</strong> → 读成 "make"</div><div class="word-card error-card"><strong>so</strong> → 读成 "too"</div><div class="word-card error-card"><strong>that</strong> → 读成 "let's"</div><div class="word-card error-card"><strong>dries</strong> → 读成 "dry"</div><div class="word-card error-card"><strong>guard</strong> → 读成 "to"</div><div class="word-card error-card"><strong>trunk</strong> → 读成 "tank, hole, hold"</div><div class="word-card error-card"><strong>least</strong> → 读成 "last"</div><div class="word-card error-card"><strong>picked</strong> → 读成 "peaking"</div><div class="word-card error-card"><strong>wood</strong> → 读成 "woods"</div><div class="word-card error-card"><strong>ft</strong> → 读成 "feet, meter"</div><div class="word-card error-card"><strong>would</strong> → 读成 "who"</div><div class="word-card error-card"><strong>vitamins</strong> → 读成 "baked"</div><div class="word-card error-card"><strong>meters</strong> → 读成 "a"</div><div class="word-card error-card"><strong>vitamin</strong> → 读成 "windmency"</div><div class="word-card error-card"><strong>calcium</strong> → 读成 "clam"</div><div class="word-card error-card"><strong>of</strong> → 读成 "over, thousand"</div><div class="word-card error-card"><strong>giants</strong> → 读成 "giant"</div><div class="word-card error-card"><strong>still</strong> → 读成 "until"</div><div class="word-card error-card"><strong>give</strong> → 读成 "gave, leaf"</div><div class="word-card error-card"><strong>no</strong> → 读成 "since"</div><div class="word-card error-card"><strong>barns</strong> → 读成 "barn"</div><div class="word-card error-card"><strong>these</strong> → 读成 ""</div><div class="word-card error-card"><strong>coating</strong> → 读成 "causing"</div><div class="word-card error-card"><strong>for</strong> → 读成 "forests"</div><div class="word-card error-card"><strong>dye</strong> → 读成 "dry"</div><div class="word-card error-card"><strong>without</strong> → 读成 "we"</div><div class="word-card error-card"><strong>dying</strong> → 读成 "dry-off, diane"</div><div class="word-card error-card"><strong>c</strong> → 读成 ""</div><div class="word-card error-card"><strong>instead</strong> → 读成 "time"</div><div class="word-card error-card"><strong>that's</strong> → 读成 "15"</div><div class="word-card error-card"><strong>plains</strong> → 读成 "plain, plants"</div><div class="word-card error-card"><strong>roots</strong> → 读成 "a, rope"</div><div class="word-card error-card"><strong>ago</strong> → 读成 "go"</div><div class="word-card error-card"><strong>houses</strong> → 读成 "house"</div><div class="word-card error-card"><strong>thousands</strong> → 读成 "a"</div><div class="word-card error-card"><strong>as</strong> → 读成 "milk, a"</div><div class="word-card error-card"><strong>savanna</strong> → 读成 ", savannah"</div><div class="word-card error-card"><strong>homes</strong> → 读成 "tomb"</div><div class="word-card error-card"><strong>packed</strong> → 读成 "baked"</div><div class="word-card error-card"><strong>off</strong> → 读成 ""</div><div class="word-card error-card"><strong>rise</strong> → 读成 "these"</div><div class="word-card error-card"><strong>baobab</strong> → 读成 "well, above, grown"</div><div class="word-card error-card"><strong>full-grown</strong> → 读成 "few"</div><div class="word-card error-card"><strong>trunks</strong> → 读成 "tank, tanks"</div><div class="word-card error-card"><strong>too</strong> → 读成 "to"</div><div class="word-card error-card"><strong>59</strong> → 读成 "ten"</div><div class="word-card error-card"><strong>giant</strong> → 读成 "giants"</div><div class="word-card error-card"><strong>tree's</strong> → 读成 "trees, tree"</div><div class="word-card error-card"><strong>nectar</strong> → 读成 "water"</div><div class="word-card error-card"><strong>the</strong> → 读成 "left, la, lysomann"</div><div class="word-card error-card"><strong>their</strong> → 读成 "they"</div><div class="word-card error-card"><strong>is</strong> → 读成 ""</div><div class="word-card error-card"><strong>cloth</strong> → 读成 "close"</div><div class="word-card error-card"><strong>gifts</strong> → 读成 "get, gift"</div><div class="word-card error-card"><strong>several</strong> → 读成 "a"</div><div class="word-card error-card"><strong>have</strong> → 读成 "has"</div><div class="word-card error-card"><strong>years</strong> → 读成 ""</div><div class="word-card error-card"><strong>its</strong> → 读成 "is, it's"</div><div class="word-card error-card"><strong>hollow</strong> → 读成 "trees, how"</div><div class="word-card error-card"><strong>it</strong> → 读成 "it's"</div><div class="word-card error-card"><strong>not</strong> → 读成 ""</div><div class="word-card error-card"><strong>did</strong> → 读成 "didn't"</div><div class="word-card error-card"><strong>plentiful</strong> → 读成 "beautiful"</div><div class="word-card error-card"><strong>lot</strong> → 读成 "lots"</div><div class="word-card error-card"><strong>bark</strong> → 读成 "bank, back"</div><div class="word-card error-card"><strong>weave</strong> → 读成 "waves"</div><div class="word-card error-card"><strong>sweet</strong> → 读成 "with"</div><div class="word-card error-card"><strong>branches</strong> → 读成 "the, branch, are"</div><div class="word-card error-card"><strong>turns</strong> → 读成 "turn"</div><div class="word-card error-card"><strong>forming</strong> → 读成 "from"</div><div class="word-card error-card"><strong>a</strong> → 读成 "up"</div><div class="word-card error-card"><strong>lands</strong> → 读成 "length"</div><div class="word-card error-card"><strong>hopefully</strong> → 读成 "hope"</div><div class="word-card error-card"><strong>2005</strong> → 读成 "in"</div><div class="word-card error-card"><strong>orange</strong> → 读成 "o-ring"</div><div class="word-card error-card"><strong>bakes</strong> → 读成 "bang"</div><div class="word-card error-card"><strong>baskets</strong> → 读成 "basket"</div><div class="word-card error-card"><strong>leaves</strong> → 读成 "leaf"</div><div class="word-card error-card"><strong>shade</strong> → 读成 "shadow"</div><div class="word-card error-card"><strong>trees</strong> → 读成 "three"</div><div class="word-card error-card"><strong>think</strong> → 读成 "say"</div><div class="word-card error-card"><strong>used</strong> → 读成 "use"</div><div class="word-card error-card"><strong>come</strong> → 读成 "become"</div><div class="word-card error-card"><strong>baobab's</strong> → 读成 "billbabs"</div><div class="word-card error-card"><strong>leafy</strong> → 读成 "leaf"</div><div class="word-card error-card"><strong>ancient</strong> → 读成 "in"</div><div class="word-card error-card"><strong>stems</strong> → 读成 "servingy, stains"</div><div class="word-card error-card"><strong>dark</strong> → 读成 "hard"</div><div class="word-card error-card"><strong>single</strong> → 读成 "tank"</div><div class="word-card error-card"><strong>get</strong> → 读成 "gets"</div><div class="word-card error-card"><strong>strings</strong> → 读成 "dream"</div></div><div class="word-section"><h3>漏读的单词</h3><div class="word-card del-card"><strong>live</strong> (未朗读)</div><div class="word-card del-card"><strong>is</strong> (未朗读)</div><div class="word-card del-card"><strong>off</strong> (未朗读)</div><div class="word-card del-card"><strong>years</strong> (未朗读)</div><div class="word-card del-card"><strong>the</strong> (未朗读)</div><div class="word-card del-card"><strong>barrels</strong> (未朗读)</div><div class="word-card del-card"><strong>c</strong> (未朗读)</div><div class="word-card del-card"><strong>like</strong> (未朗读)</div><div class="word-card del-card"><strong>not</strong> (未朗读)</div><div class="word-card del-card"><strong>savanna</strong> (未朗读)</div><div class="word-card del-card"><strong>these</strong> (未朗读)</div><div class="word-card del-card"><strong>down</strong> (未朗读)</div></div>
+
+<h2>📄 逐页分析</h2>
+
+        <div class="page-block">
+            <div class="page-header">
+                <span class="page-num">第 1 页</span>
+                <span class="badge badge-sub">替换 13</span> <span class="badge badge-del">漏读 2</span> <span class="badge badge-ins">多读 14</span> 
+                <span class="page-accuracy">准确率: 76.9%</span>
+            </div>
+            <div class="page-original">
+                <strong>原文:</strong> The Lands of Africa
+Africa has large, sandy deserts. It has thick, dark jungles. It also has open, grassy plains. The plains, known as the African savanna, are not just made up of grass, however. Stra
+                ...
+            </div>
+            <div class="page-marked">
+                <strong>朗读分析:</strong> the [length→lands] of africa africa has large sandy deserts it has thick [hard→dark] jungles it also has open grassy [plants→plains] the [plants→plains] [know→known] as the african savanna are not just made (of) (half) (made) up of grass however [strained→strange] [in→ancient] (thin) (and) (thin) tr
+            </div>
+            <div class="error-section"><span class="error-label">读错:</span> <span class="word-error">lands</span> (读成 <span class="word-wrong">length</span>), <span class="word-error">dark</span> (读成 <span class="word-wrong">hard</span>), <span class="word-error">plains</span> (读成 <span class="word-wrong">plants</span>), <span class="word-error">plains</span> (读成 <span class="word-wrong">plants</span>), <span class="word-error">known</span> (读成 <span class="word-wrong">know</span>), <span class="word-error">strange</span> (读成 <span class="word-wrong">strained</span>), <span class="word-error">ancient</span> (读成 <span class="word-wrong">in</span>), <span class="word-error">baobabs</span> (读成 <span class="word-wrong">bob</span>), <span class="word-error">the</span> (读成 <span class="word-wrong">lyswena</span>), <span class="word-error">savanna</span> (读成 <span class="word-wrong"></span>)...等13处</div><div class="error-section"><span class="error-label">漏读:</span> <span class="word-deleted">savanna</span>, <span class="word-deleted">years</span></div><div class="error-section"><span class="error-label">多读:</span> <span class="word-inserted">of</span>, <span class="word-inserted">half</span>, <span class="word-inserted">made</span>, <span class="word-inserted">thin</span>, <span class="word-inserted">and</span>, <span class="word-inserted">thin</span>, <span class="word-inserted">the</span>, <span class="word-inserted">ice</span>, <span class="word-inserted">bob</span>, <span class="word-inserted">bob</span></div>
+        </div>
+        
+        <div class="page-block">
+            <div class="page-header">
+                <span class="page-num">第 2 页</span>
+                <span class="badge badge-sub">替换 15</span> <span class="badge badge-del">漏读 1</span> <span class="badge badge-ins">多读 12</span> 
+                <span class="page-accuracy">准确率: 52.9%</span>
+            </div>
+            <div class="page-original">
+                <strong>原文:</strong> Giants of the Savanna
+Finding a baobab is easy. These trees rise high above the flat plains. A full-grown baobab can be 18 meters (59 ft.) tall. That's taller than a five-story building!
+                
+            </div>
+            <div class="page-marked">
+                <strong>朗读分析:</strong> [giant→giants] of [lysomann→the] [→savanna] {savanna} finding a [above→baobab] (three) is easy these [three→trees] [these→rise] (three) (these) high above [left→the] flat [plain→plains] a [few→full-grown] [grown→baobab] (ball) can be [mid→18] [a→meters] [ten→59] [meter→ft] (15) (nine) (feet) tall [1
+            </div>
+            <div class="error-section"><span class="error-label">读错:</span> <span class="word-error">giants</span> (读成 <span class="word-wrong">giant</span>), <span class="word-error">the</span> (读成 <span class="word-wrong">lysomann</span>), <span class="word-error">savanna</span> (读成 <span class="word-wrong"></span>), <span class="word-error">baobab</span> (读成 <span class="word-wrong">above</span>), <span class="word-error">trees</span> (读成 <span class="word-wrong">three</span>), <span class="word-error">rise</span> (读成 <span class="word-wrong">these</span>), <span class="word-error">the</span> (读成 <span class="word-wrong">left</span>), <span class="word-error">plains</span> (读成 <span class="word-wrong">plain</span>), <span class="word-error">full-grown</span> (读成 <span class="word-wrong">few</span>), <span class="word-error">baobab</span> (读成 <span class="word-wrong">grown</span>)...等15处</div><div class="error-section"><span class="error-label">漏读:</span> <span class="word-deleted">savanna</span></div><div class="error-section"><span class="error-label">多读:</span> <span class="word-inserted">three</span>, <span class="word-inserted">three</span>, <span class="word-inserted">these</span>, <span class="word-inserted">ball</span>, <span class="word-inserted">15</span>, <span class="word-inserted">nine</span>, <span class="word-inserted">feet</span>, <span class="word-inserted">nine</span>, <span class="word-inserted">feet</span>, <span class="word-inserted">tall</span></div>
+        </div>
+        
+        <div class="page-block">
+            <div class="page-header">
+                <span class="page-num">第 3 页</span>
+                <span class="badge badge-sub">替换 19</span> <span class="badge badge-del">漏读 4</span> <span class="badge badge-ins">多读 12</span> 
+                <span class="page-accuracy">准确率: 69.3%</span>
+            </div>
+            <div class="page-original">
+                <strong>原文:</strong> Baobab trees have thick, barrel-shaped trunks. The oldest trees have trunks that are 9 meters (30 ft.) across. Like barrels, the trunks hold a lot of water. This is important because the savanna is a 
+                ...
+            </div>
+            <div class="page-marked">
+                <strong>朗读分析:</strong> [bill→baobab] (babba) trees have thick [big→barrel-shaped] (row) (shaped) trunks the oldest trees have trunks [let's→that] are 9 meters 30 [feet→ft] across {like} {barrels} the trunks hold [up→a] [lots→lot] of water this is important because the savanna is a dry place being able to store water helps
+            </div>
+            <div class="error-section"><span class="error-label">读错:</span> <span class="word-error">baobab</span> (读成 <span class="word-wrong">bill</span>), <span class="word-error">barrel-shaped</span> (读成 <span class="word-wrong">big</span>), <span class="word-error">that</span> (读成 <span class="word-wrong">let's</span>), <span class="word-error">ft</span> (读成 <span class="word-wrong">feet</span>), <span class="word-error">a</span> (读成 <span class="word-wrong">up</span>), <span class="word-error">lot</span> (读成 <span class="word-wrong">lots</span>), <span class="word-error">baobabs</span> (读成 <span class="word-wrong">for</span>), <span class="word-error">baobabs</span> (读成 <span class="word-wrong">but</span>), <span class="word-error">strange</span> (读成 <span class="word-wrong">drenched</span>), <span class="word-error">their</span> (读成 <span class="word-wrong">they</span>)...等19处</div><div class="error-section"><span class="error-label">漏读:</span> <span class="word-deleted">like</span>, <span class="word-deleted">barrels</span>, <span class="word-deleted">is</span>, <span class="word-deleted">down</span></div><div class="error-section"><span class="error-label">多读:</span> <span class="word-inserted">babba</span>, <span class="word-inserted">row</span>, <span class="word-inserted">shaped</span>, <span class="word-inserted">the</span>, <span class="word-inserted">trees</span>, <span class="word-inserted">spray</span>, <span class="word-inserted">them</span>, <span class="word-inserted">fruit</span>, <span class="word-inserted">like</span>, <span class="word-inserted">a</span></div>
+        </div>
+        
+        <div class="page-block">
+            <div class="page-header">
+                <span class="page-num">第 4 页</span>
+                <span class="badge badge-sub">替换 11</span> <span class="badge badge-ins">多读 6</span> 
+                <span class="page-accuracy">准确率: 67.7%</span>
+            </div>
+            <div class="page-original">
+                <strong>原文:</strong> The Baobab's Gifts
+The wildlife and people of the savanna get many things from the baobab. The tree's soft wood is filled with water. The leafy branches give cool shade from the hot Sun.
+                
+            </div>
+            <div class="page-marked">
+                <strong>朗读分析:</strong> the [billbabs→baobab's] [get→gifts] the [wild→wildlife] (life) and (the) people of [la→the] savanna [gets→get] many things from the [billbabs→baobab] the [tree→tree's] soft wood is filled with water the [leaf→leafy] [the→branches] [leaf→give] (the) (branch) (the) (teeth) cool [shadow→shade] from the
+            </div>
+            <div class="error-section"><span class="error-label">读错:</span> <span class="word-error">baobab's</span> (读成 <span class="word-wrong">billbabs</span>), <span class="word-error">gifts</span> (读成 <span class="word-wrong">get</span>), <span class="word-error">wildlife</span> (读成 <span class="word-wrong">wild</span>), <span class="word-error">the</span> (读成 <span class="word-wrong">la</span>), <span class="word-error">get</span> (读成 <span class="word-wrong">gets</span>), <span class="word-error">baobab</span> (读成 <span class="word-wrong">billbabs</span>), <span class="word-error">tree's</span> (读成 <span class="word-wrong">tree</span>), <span class="word-error">leafy</span> (读成 <span class="word-wrong">leaf</span>), <span class="word-error">branches</span> (读成 <span class="word-wrong">the</span>), <span class="word-error">give</span> (读成 <span class="word-wrong">leaf</span>)...等11处</div><div class="error-section"><span class="error-label">多读:</span> <span class="word-inserted">life</span>, <span class="word-inserted">the</span>, <span class="word-inserted">the</span>, <span class="word-inserted">branch</span>, <span class="word-inserted">the</span>, <span class="word-inserted">teeth</span></div>
+        </div>
+        
+        <div class="page-block">
+            <div class="page-header">
+                <span class="page-num">第 5 页</span>
+                <span class="badge badge-sub">替换 13</span> <span class="badge badge-ins">多读 2</span> 
+                <span class="page-accuracy">准确率: 63.9%</span>
+            </div>
+            <div class="page-original">
+                <strong>原文:</strong> Bats drink sweet nectar from the tree's white flowers. The flowers grow into fruit. The fruit bakes in the sun and dries. Its green coating turns into a hard shell. Then it is picked by hand.
+                
+            </div>
+            <div class="page-marked">
+                <strong>朗读分析:</strong> [that→bats] drink [with→sweet] [water→nectar] from the [trees→tree's] white flowers the flowers grow into [fruits→fruit] the [fruits→fruit] [bang→bakes] in the sun and [dry→dries] [it's→its] green [causing→coating] [turn→turns] into a [heart→hard] shell then it is [peaking→picked] (peaking) (the) by
+            </div>
+            <div class="error-section"><span class="error-label">读错:</span> <span class="word-error">bats</span> (读成 <span class="word-wrong">that</span>), <span class="word-error">sweet</span> (读成 <span class="word-wrong">with</span>), <span class="word-error">nectar</span> (读成 <span class="word-wrong">water</span>), <span class="word-error">tree's</span> (读成 <span class="word-wrong">trees</span>), <span class="word-error">fruit</span> (读成 <span class="word-wrong">fruits</span>), <span class="word-error">fruit</span> (读成 <span class="word-wrong">fruits</span>), <span class="word-error">bakes</span> (读成 <span class="word-wrong">bang</span>), <span class="word-error">dries</span> (读成 <span class="word-wrong">dry</span>), <span class="word-error">its</span> (读成 <span class="word-wrong">it's</span>), <span class="word-error">coating</span> (读成 <span class="word-wrong">causing</span>)...等13处</div><div class="error-section"><span class="error-label">多读:</span> <span class="word-inserted">peaking</span>, <span class="word-inserted">the</span></div>
+        </div>
+        
+        <div class="page-block">
+            <div class="page-header">
+                <span class="page-num">第 6 页</span>
+                <span class="badge badge-sub">替换 11</span> <span class="badge badge-del">漏读 1</span> <span class="badge badge-ins">多读 8</span> 
+                <span class="page-accuracy">准确率: 72.1%</span>
+            </div>
+            <div class="page-original">
+                <strong>原文:</strong> Baobab fruit is packed with vitamins. It has more vitamin C than an orange and as much calcium as milk! People use the fruit to make a healthy, tasty drink. It can also be used to make a kind of ice c
+                ...
+            </div>
+            <div class="page-marked">
+                <strong>朗读分析:</strong> [well→baobab] [bob→fruit] (fruits) is [baked→packed] [baked→with] [baked→vitamins] (baked) (we) (baked) (tady) (the) (weasel) (windman) it has more [windmency→vitamin] [→c] {c} than an [o-ring→orange] and as much [clam→calcium] [milk→as] milk people use the [fruits→fruit] to make a healthy tasty dri
+            </div>
+            <div class="error-section"><span class="error-label">读错:</span> <span class="word-error">baobab</span> (读成 <span class="word-wrong">well</span>), <span class="word-error">fruit</span> (读成 <span class="word-wrong">bob</span>), <span class="word-error">packed</span> (读成 <span class="word-wrong">baked</span>), <span class="word-error">with</span> (读成 <span class="word-wrong">baked</span>), <span class="word-error">vitamins</span> (读成 <span class="word-wrong">baked</span>), <span class="word-error">vitamin</span> (读成 <span class="word-wrong">windmency</span>), <span class="word-error">c</span> (读成 <span class="word-wrong"></span>), <span class="word-error">orange</span> (读成 <span class="word-wrong">o-ring</span>), <span class="word-error">calcium</span> (读成 <span class="word-wrong">clam</span>), <span class="word-error">as</span> (读成 <span class="word-wrong">milk</span>)...等11处</div><div class="error-section"><span class="error-label">漏读:</span> <span class="word-deleted">c</span></div><div class="error-section"><span class="error-label">多读:</span> <span class="word-inserted">fruits</span>, <span class="word-inserted">baked</span>, <span class="word-inserted">we</span>, <span class="word-inserted">baked</span>, <span class="word-inserted">tady</span>, <span class="word-inserted">the</span>, <span class="word-inserted">weasel</span>, <span class="word-inserted">windman</span></div>
+        </div>
+        
+        <div class="page-block">
+            <div class="page-header">
+                <span class="page-num">第 7 页</span>
+                <span class="badge badge-sub">替换 10</span> 
+                <span class="page-accuracy">准确率: 72.2%</span>
+            </div>
+            <div class="page-original">
+                <strong>原文:</strong> A Different Kind of Tree House
+Baobab trees are useful in other ways, too. People weave long strings from the tree's bark to make cloth, rope, and baskets. They use the roots to make red dye.
+                
+            </div>
+            <div class="page-marked">
+                <strong>朗读分析:</strong> a different kind of tree house [build→baobab] trees are useful in other ways too people [waves→weave] [drones→long] [dream→strings] from the [trees→tree's] [bank→bark] to make [close→cloth] rope and [basket→baskets] they use the [rope→roots] to make red [dry→dye]
+            </div>
+            <div class="error-section"><span class="error-label">读错:</span> <span class="word-error">baobab</span> (读成 <span class="word-wrong">build</span>), <span class="word-error">weave</span> (读成 <span class="word-wrong">waves</span>), <span class="word-error">long</span> (读成 <span class="word-wrong">drones</span>), <span class="word-error">strings</span> (读成 <span class="word-wrong">dream</span>), <span class="word-error">tree's</span> (读成 <span class="word-wrong">trees</span>), <span class="word-error">bark</span> (读成 <span class="word-wrong">bank</span>), <span class="word-error">cloth</span> (读成 <span class="word-wrong">close</span>), <span class="word-error">baskets</span> (读成 <span class="word-wrong">basket</span>), <span class="word-error">roots</span> (读成 <span class="word-wrong">rope</span>), <span class="word-error">dye</span> (读成 <span class="word-wrong">dry</span>)</div>
+        </div>
+        
+        <div class="page-block">
+            <div class="page-header">
+                <span class="page-num">第 8 页</span>
+                <span class="badge badge-sub">替换 16</span> <span class="badge badge-del">漏读 2</span> <span class="badge badge-ins">多读 3</span> 
+                <span class="page-accuracy">准确率: 67.3%</span>
+            </div>
+            <div class="page-original">
+                <strong>原文:</strong> The trees also give shelter to animals. Insects, lizards, monkeys, and other animals live in their branches and trunks. Long ago, people, too, used these trees as shelter. They did not make tree house
+                ...
+            </div>
+            <div class="page-marked">
+                <strong>朗读分析:</strong> the trees also [gave→give] (a) shelter to animals [in→insects] [fact→lizards] (dessert) monkeys and other animals {live} in their [branch→branches] and [tank→trunks] [let→long] [go→ago] people [to→too] [use→used] these trees as shelter they [didn't→did] [→not] {not} make tree [house→houses] in their
+            </div>
+            <div class="error-section"><span class="error-label">读错:</span> <span class="word-error">give</span> (读成 <span class="word-wrong">gave</span>), <span class="word-error">insects</span> (读成 <span class="word-wrong">in</span>), <span class="word-error">lizards</span> (读成 <span class="word-wrong">fact</span>), <span class="word-error">branches</span> (读成 <span class="word-wrong">branch</span>), <span class="word-error">trunks</span> (读成 <span class="word-wrong">tank</span>), <span class="word-error">long</span> (读成 <span class="word-wrong">let</span>), <span class="word-error">ago</span> (读成 <span class="word-wrong">go</span>), <span class="word-error">too</span> (读成 <span class="word-wrong">to</span>), <span class="word-error">used</span> (读成 <span class="word-wrong">use</span>), <span class="word-error">did</span> (读成 <span class="word-wrong">didn't</span>)...等16处</div><div class="error-section"><span class="error-label">漏读:</span> <span class="word-deleted">live</span>, <span class="word-deleted">not</span></div><div class="error-section"><span class="error-label">多读:</span> <span class="word-inserted">a</span>, <span class="word-inserted">dessert</span>, <span class="word-inserted">tank</span></div>
+        </div>
+        
+        <div class="page-block">
+            <div class="page-header">
+                <span class="page-num">第 9 页</span>
+                <span class="badge badge-sub">替换 9</span> <span class="badge badge-del">漏读 1</span> 
+                <span class="page-accuracy">准确率: 50.0%</span>
+            </div>
+            <div class="page-original">
+                <strong>原文:</strong> Baobab trunks have been used as homes and barns. People have found all sorts of uses for these trees!
+                
+            </div>
+            <div class="page-marked">
+                <strong>朗读分析:</strong> [willberg's→baobab] [tanks→trunks] have been used [a→as] [tomb→homes] and [barn→barns] people have found all [shout→sorts] [over→of] uses [forests→for] [→these] {these} trees
+            </div>
+            <div class="error-section"><span class="error-label">读错:</span> <span class="word-error">baobab</span> (读成 <span class="word-wrong">willberg's</span>), <span class="word-error">trunks</span> (读成 <span class="word-wrong">tanks</span>), <span class="word-error">as</span> (读成 <span class="word-wrong">a</span>), <span class="word-error">homes</span> (读成 <span class="word-wrong">tomb</span>), <span class="word-error">barns</span> (读成 <span class="word-wrong">barn</span>), <span class="word-error">sorts</span> (读成 <span class="word-wrong">shout</span>), <span class="word-error">of</span> (读成 <span class="word-wrong">over</span>), <span class="word-error">for</span> (读成 <span class="word-wrong">forests</span>), <span class="word-error">these</span> (读成 <span class="word-wrong"></span>)</div><div class="error-section"><span class="error-label">漏读:</span> <span class="word-deleted">these</span></div>
+        </div>
+        
+        <div class="page-block">
+            <div class="page-header">
+                <span class="page-num">第 10 页</span>
+                <span class="badge badge-sub">替换 15</span> <span class="badge badge-ins">多读 6</span> 
+                <span class="page-accuracy">准确率: 63.4%</span>
+            </div>
+            <div class="page-original">
+                <strong>原文:</strong> Hollow Trees
+A baobab is hollow because it does not have a single trunk. Instead, it has several stems. The stems grow and attach to each other, forming a ring. Bark covers the stems and makes them lo
+                ...
+            </div>
+            <div class="page-marked">
+                <strong>朗读分析:</strong> [how→hollow] (do) trees a [bill→baobab] (web) is hollow because it does not have a [tank→single] [hole→trunk] [time→instead] (is) (dead) it has [a→several] [servingy→stems] (stains) the [stains→stems] grow and [attack→attach] to each other [from→forming] a ring [back→bark] [over→covers] the [stains→
+            </div>
+            <div class="error-section"><span class="error-label">读错:</span> <span class="word-error">hollow</span> (读成 <span class="word-wrong">how</span>), <span class="word-error">baobab</span> (读成 <span class="word-wrong">bill</span>), <span class="word-error">single</span> (读成 <span class="word-wrong">tank</span>), <span class="word-error">trunk</span> (读成 <span class="word-wrong">hole</span>), <span class="word-error">instead</span> (读成 <span class="word-wrong">time</span>), <span class="word-error">several</span> (读成 <span class="word-wrong">a</span>), <span class="word-error">stems</span> (读成 <span class="word-wrong">servingy</span>), <span class="word-error">stems</span> (读成 <span class="word-wrong">stains</span>), <span class="word-error">attach</span> (读成 <span class="word-wrong">attack</span>), <span class="word-error">forming</span> (读成 <span class="word-wrong">from</span>)...等15处</div><div class="error-section"><span class="error-label">多读:</span> <span class="word-inserted">do</span>, <span class="word-inserted">web</span>, <span class="word-inserted">is</span>, <span class="word-inserted">dead</span>, <span class="word-inserted">stains</span>, <span class="word-inserted">tank</span></div>
+        </div>
+        
+        <div class="page-block">
+            <div class="page-header">
+                <span class="page-num">第 11 页</span>
+                <span class="badge badge-sub">替换 23</span> <span class="badge badge-del">漏读 5</span> <span class="badge badge-ins">多读 10</span> 
+                <span class="page-accuracy">准确率: 65.4%</span>
+            </div>
+            <div class="page-original">
+                <strong>原文:</strong> Dying Giants
+Giant baobab trees have stood guard in Africa for centuries. Sadly, some of the oldest ones are dying off. At least nine trees that were thousands of years old have died since 2005.
+No on
+                ...
+            </div>
+            <div class="page-marked">
+                <strong>朗读分析:</strong> [diane→dying] giants [giants→giant] [bill→baobab] (by) trees [has→have] [due→stood] [to→guard] (the) (grain) in [every→africa] (camp) for centuries sadly some of the oldest ones are [dry-off→dying] [→off] {off} at [last→least] [night→nine] (now) trees that were thousands of years old have died (in) 
+            </div>
+            <div class="error-section"><span class="error-label">读错:</span> <span class="word-error">dying</span> (读成 <span class="word-wrong">diane</span>), <span class="word-error">giant</span> (读成 <span class="word-wrong">giants</span>), <span class="word-error">baobab</span> (读成 <span class="word-wrong">bill</span>), <span class="word-error">have</span> (读成 <span class="word-wrong">has</span>), <span class="word-error">stood</span> (读成 <span class="word-wrong">due</span>), <span class="word-error">guard</span> (读成 <span class="word-wrong">to</span>), <span class="word-error">africa</span> (读成 <span class="word-wrong">every</span>), <span class="word-error">dying</span> (读成 <span class="word-wrong">dry-off</span>), <span class="word-error">off</span> (读成 <span class="word-wrong"></span>), <span class="word-error">least</span> (读成 <span class="word-wrong">last</span>)...等23处</div><div class="error-section"><span class="error-label">漏读:</span> <span class="word-deleted">off</span>, <span class="word-deleted">the</span>, <span class="word-deleted">is</span>, <span class="word-deleted">is</span>, <span class="word-deleted">is</span></div><div class="error-section"><span class="error-label">多读:</span> <span class="word-inserted">by</span>, <span class="word-inserted">the</span>, <span class="word-inserted">grain</span>, <span class="word-inserted">camp</span>, <span class="word-inserted">now</span>, <span class="word-inserted">in</span>, <span class="word-inserted">but</span>, <span class="word-inserted">nowhere</span>, <span class="word-inserted">this</span>, <span class="word-inserted">is</span></div>
+        </div>
+        
+        <div class="page-block">
+            <div class="page-header">
+                <span class="page-num">第 12 页</span>
+                <span class="badge badge-sub">替换 10</span> <span class="badge badge-ins">多读 8</span> 
+                <span class="page-accuracy">准确率: 69.7%</span>
+            </div>
+            <div class="page-original">
+                <strong>原文:</strong> Without baobabs, life in Africa would not be the same. These giants of the savanna have so much to offer. Hopefully, people can look forward to their plentiful gifts for years to come.
+                
+            </div>
+            <div class="page-marked">
+                <strong>朗读分析:</strong> [we→without] [start→baobabs] (spielberg's) life in [african→africa] [who→would] (will) not be (in) the same these giants of the [savannah→savanna] have [too→so] much to offer [hope→hopefully] (the) people can look forward to their [beautiful→plentiful] [gift→gifts] (for) (beautiful) (gift) (hope) fo
+            </div>
+            <div class="error-section"><span class="error-label">读错:</span> <span class="word-error">without</span> (读成 <span class="word-wrong">we</span>), <span class="word-error">baobabs</span> (读成 <span class="word-wrong">start</span>), <span class="word-error">africa</span> (读成 <span class="word-wrong">african</span>), <span class="word-error">would</span> (读成 <span class="word-wrong">who</span>), <span class="word-error">savanna</span> (读成 <span class="word-wrong">savannah</span>), <span class="word-error">so</span> (读成 <span class="word-wrong">too</span>), <span class="word-error">hopefully</span> (读成 <span class="word-wrong">hope</span>), <span class="word-error">plentiful</span> (读成 <span class="word-wrong">beautiful</span>), <span class="word-error">gifts</span> (读成 <span class="word-wrong">gift</span>), <span class="word-error">come</span> (读成 <span class="word-wrong">become</span>)</div><div class="error-section"><span class="error-label">多读:</span> <span class="word-inserted">spielberg's</span>, <span class="word-inserted">will</span>, <span class="word-inserted">in</span>, <span class="word-inserted">the</span>, <span class="word-inserted">for</span>, <span class="word-inserted">beautiful</span>, <span class="word-inserted">gift</span>, <span class="word-inserted">hope</span></div>
+        </div>
+        
+
+<div class="footer">
+    Generated by ABC Reading Analyzer | 2026-06-26 04:43:02
+</div>
+</body>
+</html>

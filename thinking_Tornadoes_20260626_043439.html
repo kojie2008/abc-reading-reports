@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>朗读评测报告 - thinking</title>
+<style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+        font-family: -apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif;
+        background: #f5f7fa;
+        color: #333;
+        padding: 20px;
+        max-width: 900px;
+        margin: 0 auto;
+    }
+    .header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border-radius: 16px;
+        padding: 30px;
+        margin-bottom: 20px;
+        position: relative;
+        overflow: hidden;
+    }
+    .header h1 { font-size: 24px; margin-bottom: 8px; }
+    .header .meta { font-size: 14px; opacity: 0.9; }
+    .score-overview {
+        background: white;
+        border-radius: 16px;
+        padding: 24px;
+        margin-bottom: 20px;
+        box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+    }
+    .score-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 16px;
+        margin-top: 16px;
+    }
+    .score-item {
+        text-align: center;
+        padding: 16px;
+        background: #f8f9ff;
+        border-radius: 12px;
+    }
+    .score-item .number {
+        font-size: 32px;
+        font-weight: bold;
+        color: #667eea;
+    }
+    .score-item .label {
+        font-size: 13px;
+        color: #999;
+        margin-top: 4px;
+    }
+    .score-item .number.good { color: #22c55e; }
+    .score-item .number.ok { color: #eab308; }
+    .score-item .number.bad { color: #ef4444; }
+    .page-block {
+        background: white;
+        border-radius: 12px;
+        padding: 16px 20px;
+        margin-bottom: 12px;
+        box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+        border-left: 4px solid #667eea;
+    }
+    .page-header { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
+    .page-num { font-weight: bold; font-size: 15px; }
+    .page-accuracy { margin-left: auto; font-size: 13px; color: #666; }
+    .badge {
+        display: inline-block;
+        padding: 2px 8px;
+        border-radius: 10px;
+        font-size: 11px;
+        font-weight: bold;
+        color: white;
+    }
+    .badge-sub { background: #f59e0b; }
+    .badge-del { background: #ef4444; }
+    .badge-ins { background: #8b5cf6; }
+    .page-original { font-size: 14px; line-height: 1.6; margin-bottom: 8px; color: #444; }
+    .page-marked { font-size: 14px; line-height: 1.6; margin-bottom: 8px; color: #555; }
+    .error-section { margin-top: 8px; font-size: 13px; }
+    .error-label { font-weight: bold; color: #666; margin-right: 4px; }
+    .word-error { color: #f59e0b; font-weight: bold; }
+    .word-wrong { color: #999; text-decoration: line-through; }
+    .word-deleted { color: #ef4444; text-decoration: line-through; }
+    .word-inserted { color: #8b5cf6; font-style: italic; }
+    .word-section { margin-top: 20px; }
+    .word-section h3 { font-size: 16px; margin-bottom: 12px; }
+    .word-card {
+        display: inline-block;
+        padding: 6px 12px;
+        margin: 4px;
+        border-radius: 8px;
+        font-size: 14px;
+        background: #fef3c7;
+        border: 1px solid #f59e0b;
+    }
+    .word-card.del-card { background: #fee2e2; border-color: #ef4444; }
+    .footer { text-align: center; color: #999; font-size: 12px; margin-top: 30px; }
+</style>
+</head>
+<body>
+<div class="header">
+    <h1>📖 thinking 的朗读评测报告</h1>
+    <div class="meta">
+        绘本: 《Tornadoes》 | Level: M | 第 836 个作品
+    </div>
+    <div class="meta" style="margin-top:4px">
+        ABC Reading 平台评分: 96 分 | 统计时间: 2026-06-26 04:34
+    </div>
+</div>
+
+<div class="score-overview">
+    <h2>📊 整体评分</h2>
+    <div class="score-grid">
+        <div class="score-item">
+            <div class="number good">79.0%</div>
+            <div class="label">单词准确率</div>
+        </div>
+        <div class="score-item">
+            <div class="number">459/581</div>
+            <div class="label">正确单词数</div>
+        </div>
+        <div class="score-item">
+            <div class="number ok">110</div>
+            <div class="label">读错(替换)的单词</div>
+        </div>
+        <div class="score-item">
+            <div class="number bad">12</div>
+            <div class="label">漏读的单词</div>
+        </div>
+        <div class="score-item">
+            <div class="number">27</div>
+            <div class="label">多读的单词</div>
+        </div>
+    </div>
+</div>
+
+<div class="word-section"><h3>读错的单词</h3><div class="word-card error-card"><strong>lie</strong> → 读成 "to"</div><div class="word-card error-card"><strong>park</strong> → 读成 "pack"</div><div class="word-card error-card"><strong>the</strong> → 读成 "a"</div><div class="word-card error-card"><strong>winds</strong> → 读成 "winged"</div><div class="word-card error-card"><strong>200</strong> → 读成 "one"</div><div class="word-card error-card"><strong>safest</strong> → 读成 "safety"</div><div class="word-card error-card"><strong>estimate</strong> → 读成 "see, resist"</div><div class="word-card error-card"><strong>thousand</strong> → 读成 "000"</div><div class="word-card error-card"><strong>we'll</strong> → 读成 "we"</div><div class="word-card error-card"><strong>alley</strong> → 读成 ", eddy"</div><div class="word-card error-card"><strong>greater</strong> → 读成 "right"</div><div class="word-card error-card"><strong>declare</strong> → 读成 "explore"</div><div class="word-card error-card"><strong>flat</strong> → 读成 "9-down"</div><div class="word-card error-card"><strong>caused</strong> → 读成 "causes"</div><div class="word-card error-card"><strong>tornado</strong> → 读成 ", tornadoes"</div><div class="word-card error-card"><strong>their</strong> → 读成 "when"</div><div class="word-card error-card"><strong>get</strong> → 读成 "that"</div><div class="word-card error-card"><strong>occur</strong> → 读成 "core"</div><div class="word-card error-card"><strong>spinning</strong> → 读成 "spinny"</div><div class="word-card error-card"><strong>what</strong> → 读成 "what's"</div><div class="word-card error-card"><strong>bathrooms</strong> → 读成 "best"</div><div class="word-card error-card"><strong>moisture</strong> → 读成 "most"</div><div class="word-card error-card"><strong>wind</strong> → 读成 "mid-wing, wing"</div><div class="word-card error-card"><strong>balance</strong> → 读成 "baddest"</div><div class="word-card error-card"><strong>you're</strong> → 读成 "you"</div><div class="word-card error-card"><strong>tornadoes</strong> → 读成 "to, tornado's"</div><div class="word-card error-card"><strong>tornado's</strong> → 读成 "tornado"</div><div class="word-card error-card"><strong>system</strong> → 读成 "stem"</div><div class="word-card error-card"><strong>ef</strong> → 读成 "their"</div><div class="word-card error-card"><strong>it's</strong> → 读成 "it"</div><div class="word-card error-card"><strong>causes</strong> → 读成 "cause, caught"</div><div class="word-card error-card"><strong>enhanced</strong> → 读成 "incidence"</div><div class="word-card error-card"><strong>them</strong> → 读成 "snow"</div><div class="word-card error-card"><strong>kmph</strong> → 读成 ""</div><div class="word-card error-card"><strong>nws</strong> → 读成 "use, news"</div><div class="word-card error-card"><strong>far</strong> → 读成 "for"</div><div class="word-card error-card"><strong>like</strong> → 读成 "that"</div><div class="word-card error-card"><strong>closets</strong> → 读成 "close"</div><div class="word-card error-card"><strong>others</strong> → 读成 "other, the"</div><div class="word-card error-card"><strong>in</strong> → 读成 "near"</div><div class="word-card error-card"><strong>mattress</strong> → 读成 "mattresses"</div><div class="word-card error-card"><strong>measuring</strong> → 读成 "mid-ring"</div><div class="word-card error-card"><strong>down</strong> → 读成 "a"</div><div class="word-card error-card"><strong>atmosphere</strong> → 读成 "monster"</div><div class="word-card error-card"><strong>this</strong> → 读成 "these"</div><div class="word-card error-card"><strong>creates</strong> → 读成 "creeps"</div><div class="word-card error-card"><strong>point</strong> → 读成 "moment"</div><div class="word-card error-card"><strong>than</strong> → 读成 "there"</div><div class="word-card error-card"><strong>tall</strong> → 读成 "tub"</div><div class="word-card error-card"><strong>wide</strong> → 读成 ""</div><div class="word-card error-card"><strong>things</strong> → 读成 "its"</div><div class="word-card error-card"><strong>to</strong> → 读成 "too"</div><div class="word-card error-card"><strong>form</strong> → 读成 "from"</div><div class="word-card error-card"><strong>ef-5</strong> → 读成 "ef"</div><div class="word-card error-card"><strong>roofs</strong> → 读成 "rules"</div><div class="word-card error-card"><strong>where</strong> → 读成 "we're"</div><div class="word-card error-card"><strong>they</strong> → 读成 "late"</div><div class="word-card error-card"><strong>places</strong> → 读成 "place"</div><div class="word-card error-card"><strong>when</strong> → 读成 "what"</div><div class="word-card error-card"><strong>scale</strong> → 读成 "skill"</div><div class="word-card error-card"><strong>becomes</strong> → 读成 "become"</div><div class="word-card error-card"><strong>bathtub</strong> → 读成 "bus"</div><div class="word-card error-card"><strong>fujita</strong> → 读成 "through"</div><div class="word-card error-card"><strong>do</strong> → 读成 "to"</div><div class="word-card error-card"><strong>releases</strong> → 读成 "replaces"</div><div class="word-card error-card"><strong>6</strong> → 读成 "key"</div><div class="word-card error-card"><strong>tries</strong> → 读成 "trace"</div><div class="word-card error-card"><strong>mixes</strong> → 读成 "mixed"</div><div class="word-card error-card"><strong>lean</strong> → 读成 "then"</div><div class="word-card error-card"><strong>322</strong> → 读成 "three-hundred-twenty-two"</div><div class="word-card error-card"><strong>lift</strong> → 读成 "live"</div><div class="word-card error-card"><strong>moist</strong> → 读成 "most"</div><div class="word-card error-card"><strong>come</strong> → 读成 "comes, anado's"</div><div class="word-card error-card"><strong>1</strong> → 读成 "one, six"</div><div class="word-card error-card"><strong>km</strong> → 读成 "like"</div><div class="word-card error-card"><strong>indoors</strong> → 读成 "indoor"</div><div class="word-card error-card"><strong>a</strong> → 读成 "your, tornadoes, one"</div><div class="word-card error-card"><strong>funnel</strong> → 读成 "thunder"</div><div class="word-card error-card"><strong>glass</strong> → 读成 "classes"</div><div class="word-card error-card"><strong>national</strong> → 读成 "normal"</div><div class="word-card error-card"><strong>some</strong> → 读成 "so"</div><div class="word-card error-card"><strong>rate</strong> → 读成 "raise"</div><div class="word-card error-card"><strong>outdoors</strong> → 读成 "out"</div><div class="word-card error-card"><strong>develop</strong> → 读成 "in"</div><div class="word-card error-card"><strong>it</strong> → 读成 "it's"</div><div class="word-card error-card"><strong>arrives</strong> → 读成 "arrive"</div><div class="word-card error-card"><strong>seatbelt</strong> → 读成 "seats"</div><div class="word-card error-card"><strong>service</strong> → 读成 "servers"</div><div class="word-card error-card"><strong>one</strong> → 读成 "1"</div><div class="word-card error-card"><strong>there</strong> → 读成 "the"</div></div><div class="word-section"><h3>漏读的单词</h3><div class="word-card del-card"><strong>think</strong> (未朗读)</div><div class="word-card del-card"><strong>the</strong> (未朗读)</div><div class="word-card del-card"><strong>wide</strong> (未朗读)</div><div class="word-card del-card"><strong>be</strong> (未朗读)</div><div class="word-card del-card"><strong>alley</strong> (未朗读)</div><div class="word-card del-card"><strong>that</strong> (未朗读)</div><div class="word-card del-card"><strong>low</strong> (未朗读)</div><div class="word-card del-card"><strong>tornado</strong> (未朗读)</div><div class="word-card del-card"><strong>to</strong> (未朗读)</div><div class="word-card del-card"><strong>kmph</strong> (未朗读)</div><div class="word-card del-card"><strong>when</strong> (未朗读)</div></div>
+
+<h2>📄 逐页分析</h2>
+
+        <div class="page-block">
+            <div class="page-header">
+                <span class="page-num">第 1 页</span>
+                <span class="badge badge-sub">替换 17</span> <span class="badge badge-del">漏读 1</span> <span class="badge badge-ins">多读 4</span> 
+                <span class="page-accuracy">准确率: 68.4%</span>
+            </div>
+            <div class="page-original">
+                <strong>原文:</strong> Introduction
+What can lift roofs from buildings and sweep houses into the air?
+Tornadoes can! Tornadoes come in many sizes. Some tornadoes measure only a few feet (1 meter) across. Others are more tha
+                ...
+            </div>
+            <div class="page-marked">
+                <strong>朗读分析:</strong> introduction [what's→what] can [live→lift] [rules→roofs] from buildings and sweep houses into the air [to→tornadoes] (anado's) can [to→tornadoes] [anado's→come] (can) in many sizes [so→some] [to→tornadoes] (anado's) measure only a few feet [one→1] meter across [the→others] (other) are more than [one
+            </div>
+            <div class="error-section"><span class="error-label">读错:</span> <span class="word-error">what</span> (读成 <span class="word-wrong">what's</span>), <span class="word-error">lift</span> (读成 <span class="word-wrong">live</span>), <span class="word-error">roofs</span> (读成 <span class="word-wrong">rules</span>), <span class="word-error">tornadoes</span> (读成 <span class="word-wrong">to</span>), <span class="word-error">tornadoes</span> (读成 <span class="word-wrong">to</span>), <span class="word-error">come</span> (读成 <span class="word-wrong">anado's</span>), <span class="word-error">some</span> (读成 <span class="word-wrong">so</span>), <span class="word-error">tornadoes</span> (读成 <span class="word-wrong">to</span>), <span class="word-error">1</span> (读成 <span class="word-wrong">one</span>), <span class="word-error">others</span> (读成 <span class="word-wrong">the</span>)...等17处</div><div class="error-section"><span class="error-label">漏读:</span> <span class="word-deleted">wide</span></div><div class="error-section"><span class="error-label">多读:</span> <span class="word-inserted">anado's</span>, <span class="word-inserted">can</span>, <span class="word-inserted">anado's</span>, <span class="word-inserted">other</span></div>
+        </div>
+        
+        <div class="page-block">
+            <div class="page-header">
+                <span class="page-num">第 2 页</span>
+                <span class="badge badge-sub">替换 11</span> <span class="badge badge-del">漏读 2</span> <span class="badge badge-ins">多读 3</span> 
+                <span class="page-accuracy">准确率: 82.9%</span>
+            </div>
+            <div class="page-original">
+                <strong>原文:</strong> How Tornadoes Form
+Why do tornadoes happen? Scientists aren't sure. They know that strong tornadoes come from huge thunderstorms called supercells. These storms form when warm, moist air rises in the 
+                ...
+            </div>
+            <div class="page-marked">
+                <strong>朗读分析:</strong> how tornadoes form why do tornadoes happen scientists aren't sure they know that strong tornadoes [comes→come] from huge thunderstorms called supercells these storms [from→form] when warm [most→moist] air rises in [a→the] [monster→atmosphere] and [mixed→mixes] with cold dry air scientists {think} {t
+            </div>
+            <div class="error-section"><span class="error-label">读错:</span> <span class="word-error">come</span> (读成 <span class="word-wrong">comes</span>), <span class="word-error">form</span> (读成 <span class="word-wrong">from</span>), <span class="word-error">moist</span> (读成 <span class="word-wrong">most</span>), <span class="word-error">the</span> (读成 <span class="word-wrong">a</span>), <span class="word-error">atmosphere</span> (读成 <span class="word-wrong">monster</span>), <span class="word-error">mixes</span> (读成 <span class="word-wrong">mixed</span>), <span class="word-error">spinning</span> (读成 <span class="word-wrong">spinny</span>), <span class="word-error">funnel</span> (读成 <span class="word-wrong">thunder</span>), <span class="word-error">funnel</span> (读成 <span class="word-wrong">thunder</span>), <span class="word-error">it</span> (读成 <span class="word-wrong">it's</span>)...等11处</div><div class="error-section"><span class="error-label">漏读:</span> <span class="word-deleted">think</span>, <span class="word-deleted">that</span></div><div class="error-section"><span class="error-label">多读:</span> <span class="word-inserted">cause</span>, <span class="word-inserted">are</span>, <span class="word-inserted">cells</span></div>
+        </div>
+        
+        <div class="page-block">
+            <div class="page-header">
+                <span class="page-num">第 3 页</span>
+                <span class="badge badge-sub">替换 2</span> <span class="badge badge-ins">多读 1</span> 
+                <span class="page-accuracy">准确率: 88.2%</span>
+            </div>
+            <div class="page-original">
+                <strong>原文:</strong> Some scientists think that tornadoes happen in order to balance the temperature and moisture in the air.
+                
+            </div>
+            <div class="page-marked">
+                <strong>朗读分析:</strong> some scientists think that tornadoes happen in order to [baddest→balance] the temperature and [most→moisture] (are) in the air
+            </div>
+            <div class="error-section"><span class="error-label">读错:</span> <span class="word-error">balance</span> (读成 <span class="word-wrong">baddest</span>), <span class="word-error">moisture</span> (读成 <span class="word-wrong">most</span>)</div><div class="error-section"><span class="error-label">多读:</span> <span class="word-inserted">are</span></div>
+        </div>
+        
+        <div class="page-block">
+            <div class="page-header">
+                <span class="page-num">第 5 页</span>
+                <span class="badge badge-sub">替换 22</span> <span class="badge badge-del">漏读 1</span> <span class="badge badge-ins">多读 4</span> 
+                <span class="page-accuracy">准确率: 66.7%</span>
+            </div>
+            <div class="page-original">
+                <strong>原文:</strong> Measuring Tornadoes
+Scientists are still studying the causes of tornadoes, but they have a system to estimate their strength. They use a special scale called the Enhanced Fujita (EF) Scale. It uses wi
+                ...
+            </div>
+            <div class="page-marked">
+                <strong>朗读分析:</strong> [mid-ring→measuring] tornadoes scientists are still studying the causes of tornadoes but they have a [stem→system] to [see→estimate] [when→their] (it's) (near) strength they use a special [skill→scale] called the [incidence→enhanced] [through→fujita] [their→ef] [skill→scale] it uses [wing→wind] spee
+            </div>
+            <div class="error-section"><span class="error-label">读错:</span> <span class="word-error">measuring</span> (读成 <span class="word-wrong">mid-ring</span>), <span class="word-error">system</span> (读成 <span class="word-wrong">stem</span>), <span class="word-error">estimate</span> (读成 <span class="word-wrong">see</span>), <span class="word-error">their</span> (读成 <span class="word-wrong">when</span>), <span class="word-error">scale</span> (读成 <span class="word-wrong">skill</span>), <span class="word-error">enhanced</span> (读成 <span class="word-wrong">incidence</span>), <span class="word-error">fujita</span> (读成 <span class="word-wrong">through</span>), <span class="word-error">ef</span> (读成 <span class="word-wrong">their</span>), <span class="word-error">scale</span> (读成 <span class="word-wrong">skill</span>), <span class="word-error">wind</span> (读成 <span class="word-wrong">wing</span>)...等22处</div><div class="error-section"><span class="error-label">漏读:</span> <span class="word-deleted">kmph</span></div><div class="error-section"><span class="error-label">多读:</span> <span class="word-inserted">it's</span>, <span class="word-inserted">near</span>, <span class="word-inserted">5</span>, <span class="word-inserted">two-hundred</span></div>
+        </div>
+        
+        <div class="page-block">
+            <div class="page-header">
+                <span class="page-num">第 6 页</span>
+                <span class="badge badge-sub">替换 11</span> <span class="badge badge-del">漏读 1</span> <span class="badge badge-ins">多读 5</span> 
+                <span class="page-accuracy">准确率: 79.0%</span>
+            </div>
+            <div class="page-original">
+                <strong>原文:</strong> Where Tornadoes Form
+Tornadoes may be hard to measure, but scientists have a good idea where they will strike. It's possible for a tornado to happen anywhere in the world. However, most tornadoes occu
+                ...
+            </div>
+            <div class="page-marked">
+                <strong>朗读分析:</strong> [we're→where] tornadoes [from→form] tornadoes may be hard to measure but scientists have a good idea where they will strike [it→it's] (is) possible for [tornadoes→a] [→tornado] {tornado} to happen anywhere in the world however most tornadoes [core→occur] (shore) in the central part of the united sta
+            </div>
+            <div class="error-section"><span class="error-label">读错:</span> <span class="word-error">where</span> (读成 <span class="word-wrong">we're</span>), <span class="word-error">form</span> (读成 <span class="word-wrong">from</span>), <span class="word-error">it's</span> (读成 <span class="word-wrong">it</span>), <span class="word-error">a</span> (读成 <span class="word-wrong">tornadoes</span>), <span class="word-error">tornado</span> (读成 <span class="word-wrong"></span>), <span class="word-error">occur</span> (读成 <span class="word-wrong">core</span>), <span class="word-error">alley</span> (读成 <span class="word-wrong">eddy</span>), <span class="word-error">one</span> (读成 <span class="word-wrong">1</span>), <span class="word-error">thousand</span> (读成 <span class="word-wrong">000</span>), <span class="word-error">develop</span> (读成 <span class="word-wrong">in</span>)...等11处</div><div class="error-section"><span class="error-label">漏读:</span> <span class="word-deleted">tornado</span></div><div class="error-section"><span class="error-label">多读:</span> <span class="word-inserted">is</span>, <span class="word-inserted">shore</span>, <span class="word-inserted">only</span>, <span class="word-inserted">world</span>, <span class="word-inserted">are</span></div>
+        </div>
+        
+        <div class="page-block">
+            <div class="page-header">
+                <span class="page-num">第 7 页</span>
+                <span class="badge badge-sub">替换 3</span> <span class="badge badge-del">漏读 1</span> 
+                <span class="page-accuracy">准确率: 79.0%</span>
+            </div>
+            <div class="page-original">
+                <strong>原文:</strong> In Tornado Alley, the mixing of air from the north and south creates perfect conditions for a tornado.
+                
+            </div>
+            <div class="page-marked">
+                <strong>朗读分析:</strong> in [tornadoes→tornado] [→alley] {alley} the mixing of air from the north and south [creeps→creates] perfect conditions for a tornado
+            </div>
+            <div class="error-section"><span class="error-label">读错:</span> <span class="word-error">tornado</span> (读成 <span class="word-wrong">tornadoes</span>), <span class="word-error">alley</span> (读成 <span class="word-wrong"></span>), <span class="word-error">creates</span> (读成 <span class="word-wrong">creeps</span>)</div><div class="error-section"><span class="error-label">漏读:</span> <span class="word-deleted">alley</span></div>
+        </div>
+        
+        <div class="page-block">
+            <div class="page-header">
+                <span class="page-num">第 9 页</span>
+                <span class="badge badge-sub">替换 10</span> <span class="badge badge-del">漏读 2</span> 
+                <span class="page-accuracy">准确率: 85.9%</span>
+            </div>
+            <div class="page-original">
+                <strong>原文:</strong> Tornado Safety
+Because tornadoes are so dangerous, weather scientists do their best to warn people before a tornado arrives. However, there is no way to be sure that a tornado will strike. The Nationa
+                ...
+            </div>
+            <div class="page-marked">
+                <strong>朗读分析:</strong> tornado safety because tornadoes are so dangerous weather scientists do their best to warn people before a tornado [arrive→arrives] however there is no way to be sure that a tornado will strike the [normal→national] weather [servers→service] [use→nws] [trace→tries] to help people stay safe during to
+            </div>
+            <div class="error-section"><span class="error-label">读错:</span> <span class="word-error">arrives</span> (读成 <span class="word-wrong">arrive</span>), <span class="word-error">national</span> (读成 <span class="word-wrong">normal</span>), <span class="word-error">service</span> (读成 <span class="word-wrong">servers</span>), <span class="word-error">nws</span> (读成 <span class="word-wrong">use</span>), <span class="word-error">tries</span> (读成 <span class="word-wrong">trace</span>), <span class="word-error">they</span> (读成 <span class="word-wrong">late</span>), <span class="word-error">declare</span> (读成 <span class="word-wrong">explore</span>), <span class="word-error">nws</span> (读成 <span class="word-wrong">news</span>), <span class="word-error">releases</span> (读成 <span class="word-wrong">replaces</span>), <span class="word-error">point</span> (读成 <span class="word-wrong">moment</span>)</div><div class="error-section"><span class="error-label">漏读:</span> <span class="word-deleted">when</span>, <span class="word-deleted">to</span></div>
+        </div>
+        
+        <div class="page-block">
+            <div class="page-header">
+                <span class="page-num">第 10 页</span>
+                <span class="badge badge-sub">替换 10</span> <span class="badge badge-del">漏读 3</span> <span class="badge badge-ins">多读 3</span> 
+                <span class="page-accuracy">准确率: 78.3%</span>
+            </div>
+            <div class="page-original">
+                <strong>原文:</strong> The safest place to be is indoors, in a basement if possible. The next safest places are closets or bathrooms. Try to stay away from windows because a tornado can blast through the glass. Get down low
+                ...
+            </div>
+            <div class="page-marked">
+                <strong>朗读分析:</strong> the [safety→safest] place {to} {be} is [indoor→indoors] in [your→a] basement if possible the next [safety→safest] [place→places] are [close→closets] or [best→bathrooms] (rooms) try to stay away from windows because a tornado can blast through the [classes→glass] [that→get] (they'll) down {low} to th
+            </div>
+            <div class="error-section"><span class="error-label">读错:</span> <span class="word-error">safest</span> (读成 <span class="word-wrong">safety</span>), <span class="word-error">indoors</span> (读成 <span class="word-wrong">indoor</span>), <span class="word-error">a</span> (读成 <span class="word-wrong">your</span>), <span class="word-error">safest</span> (读成 <span class="word-wrong">safety</span>), <span class="word-error">places</span> (读成 <span class="word-wrong">place</span>), <span class="word-error">closets</span> (读成 <span class="word-wrong">close</span>), <span class="word-error">bathrooms</span> (读成 <span class="word-wrong">best</span>), <span class="word-error">glass</span> (读成 <span class="word-wrong">classes</span>), <span class="word-error">get</span> (读成 <span class="word-wrong">that</span>), <span class="word-error">bathtub</span> (读成 <span class="word-wrong">bus</span>)</div><div class="error-section"><span class="error-label">漏读:</span> <span class="word-deleted">to</span>, <span class="word-deleted">be</span>, <span class="word-deleted">low</span></div><div class="error-section"><span class="error-label">多读:</span> <span class="word-inserted">rooms</span>, <span class="word-inserted">they'll</span>, <span class="word-inserted">talk</span></div>
+        </div>
+        
+        <div class="page-block">
+            <div class="page-header">
+                <span class="page-num">第 11 页</span>
+                <span class="badge badge-sub">替换 20</span> <span class="badge badge-del">漏读 1</span> <span class="badge badge-ins">多读 6</span> 
+                <span class="page-accuracy">准确率: 76.7%</span>
+            </div>
+            <div class="page-original">
+                <strong>原文:</strong> The spinning cloud of a tornado causes things to fly around. Because this can be very dangerous, it's always important to protect your head. If you can find a mattress or blankets, cover yourself with
+                ...
+            </div>
+            <div class="page-marked">
+                <strong>朗读分析:</strong> the spinning cloud of a tornado [caught→causes] [its→things] (scene) to fly around because [these→this] can be very dangerous it's always important [too→to] protect your head if you can find a [mattresses→mattress] or blankets cover yourself with [snow→them] if you are in a [tub→tall] building find 
+            </div>
+            <div class="error-section"><span class="error-label">读错:</span> <span class="word-error">causes</span> (读成 <span class="word-wrong">caught</span>), <span class="word-error">things</span> (读成 <span class="word-wrong">its</span>), <span class="word-error">this</span> (读成 <span class="word-wrong">these</span>), <span class="word-error">to</span> (读成 <span class="word-wrong">too</span>), <span class="word-error">mattress</span> (读成 <span class="word-wrong">mattresses</span>), <span class="word-error">them</span> (读成 <span class="word-wrong">snow</span>), <span class="word-error">tall</span> (读成 <span class="word-wrong">tub</span>), <span class="word-error">the</span> (读成 <span class="word-wrong">a</span>), <span class="word-error">do</span> (读成 <span class="word-wrong">to</span>), <span class="word-error">in</span> (读成 <span class="word-wrong">near</span>)...等20处</div><div class="error-section"><span class="error-label">漏读:</span> <span class="word-deleted">the</span></div><div class="error-section"><span class="error-label">多读:</span> <span class="word-inserted">scene</span>, <span class="word-inserted">are</span>, <span class="word-inserted">built</span>, <span class="word-inserted">move</span>, <span class="word-inserted">are</span>, <span class="word-inserted">fat</span></div>
+        </div>
+        
+        <div class="page-block">
+            <div class="page-header">
+                <span class="page-num">第 12 页</span>
+                <span class="badge badge-sub">替换 4</span> <span class="badge badge-ins">多读 1</span> 
+                <span class="page-accuracy">准确率: 92.2%</span>
+            </div>
+            <div class="page-original">
+                <strong>原文:</strong> Conclusion
+Tornadoes are amazing—and scary—examples of the power of nature. Weather scientists are working to invent better ways to tell when a tornado is coming. Many questions remain about tornadoes
+                ...
+            </div>
+            <div class="page-marked">
+                <strong>朗读分析:</strong> conclusion tornadoes are amazing and scary examples of the power of nature weather scientists are working to invent better ways to tell [what→when] a tornado is coming many questions remain about tornadoes what really [cause→causes] a tornado what is it actually [that→like] inside a tornado perhaps 
+            </div>
+            <div class="error-section"><span class="error-label">读错:</span> <span class="word-error">when</span> (读成 <span class="word-wrong">what</span>), <span class="word-error">causes</span> (读成 <span class="word-wrong">cause</span>), <span class="word-error">like</span> (读成 <span class="word-wrong">that</span>), <span class="word-error">we'll</span> (读成 <span class="word-wrong">we</span>)</div><div class="error-section"><span class="error-label">多读:</span> <span class="word-inserted">will</span></div>
+        </div>
+        
+
+<div class="footer">
+    Generated by ABC Reading Analyzer | 2026-06-26 04:34:39
+</div>
+</body>
+</html>

@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>朗读评测报告 - 小雨</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,'PingFang SC','Microsoft YaHei',sans-serif;background:#f0f2f5;color:#333;padding:0;max-width:420px;margin:0 auto;min-height:100vh}
+.banner{background:linear-gradient(135deg,#667eea 0%,#f093fb 50%,#f5576c 100%);padding:28px 20px 24px;position:relative;overflow:hidden}
+.banner-stars{position:absolute;top:12px;right:16px;font-size:20px;opacity:.4}
+.banner-label{font-size:11px;color:rgba(255,255,255,.6);letter-spacing:3px;margin-bottom:2px}
+.banner-name{font-size:26px;color:#fff;font-weight:700;line-height:1.2}
+.banner-sub{font-size:13px;color:rgba(255,255,255,.8);margin-top:2px}
+.banner-flex{display:flex;align-items:center;gap:16px;margin-top:14px}
+.banner-side{color:#fff}
+.banner-big{font-size:32px;font-weight:700;line-height:1}
+.banner-sm{font-size:11px;opacity:.7;margin-top:2px}
+.banner-ts{margin-top:10px;font-size:11px;color:rgba(255,255,255,.5)}
+.content{padding:10px 12px}
+.card{background:#fff;border-radius:14px;padding:14px;margin-bottom:10px;box-shadow:0 1px 6px rgba(0,0,0,.06)}
+.card h3{font-size:14px;color:#555;margin-bottom:10px;display:flex;align-items:center;gap:6px}
+.card h4{font-size:13px;color:#666;margin-bottom:6px}
+.s-grid{display:flex;flex-direction:column;gap:6px}
+.s-row{display:flex;align-items:center;gap:6px;padding:5px 0;border-bottom:1px solid #f5f5f5}
+.s-row:last-child{border-bottom:none}
+.s-icon{width:22px;text-align:center;font-size:13px}
+.s-label{flex:1;font-size:12px;color:#666}
+.s-val{font-size:13px;font-weight:600;white-space:nowrap;width:52px;text-align:right}
+.result-pass,.result-fail{text-align:center;padding:16px}
+.result-pass{background:linear-gradient(135deg,#22c55e,#16a34a);color:#fff}
+.result-fail{background:linear-gradient(135deg,#f59e0b,#d97706);color:#fff}
+.result-score{font-size:40px;font-weight:700}
+.result-label{font-size:14px;margin-top:4px}
+.result-detail{font-size:11px;opacity:.7;margin-top:4px}
+.err-grid{display:flex;flex-direction:column;gap:8px}
+.err-cat{}
+.err-cat-head{display:flex;align-items:center;gap:6px;font-size:13px;margin-bottom:4px}
+.err-cat-label{font-weight:600;flex:1;font-size:12px;color:#444}
+.err-cat-count{font-size:11px;color:#999;background:#f5f5f5;padding:1px 8px;border-radius:8px}
+.err-cat-tags{display:flex;flex-wrap:wrap;gap:4px}
+.wtag{display:inline-block;padding:2px 8px;border-radius:10px;font-size:11px;border:1px solid}
+.page{background:#fff;border-radius:12px;margin-bottom:8px;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,.04)}
+.page-hd{display:flex;align-items:center;padding:10px 12px;gap:8px;border-bottom:1px solid #f0f0f0}
+.page-num{width:32px;height:32px;border-radius:50%;background:#eff6ff;color:#3b82f6;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0}
+.page-info{flex:1;display:flex;flex-wrap:wrap;align-items:center;gap:4px}
+.page-acc{font-size:13px;font-weight:600;margin-right:4px}
+.badge{display:inline-block;padding:1px 6px;border-radius:8px;font-size:10px;font-weight:600;color:#fff}
+.badge.sub{background:#f59e0b}
+.badge.del{background:#ef4444}
+.badge.ins{background:#8b5cf6}
+.page-body{padding:10px 12px}
+.page-text{font-size:13px;line-height:1.7;margin-bottom:8px;word-break:break-word}
+.w-correct{color:#333}
+.w-err{color:#f59e0b;font-weight:600}
+.w-read{color:#bbb;font-weight:400;font-size:11px;text-decoration:line-through;margin-left:2px}
+.w-del{color:#ef4444;text-decoration:line-through}
+.ap{border:1.5px solid;border-radius:10px;padding:6px 10px;margin-bottom:6px;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.ap-icon{font-size:14px}
+.ap-label{font-size:11px;color:#666;flex-shrink:0}
+.ap audio{flex:1;min-width:120px;height:32px;border-radius:6px}
+.train-block{margin-top:10px;padding-top:10px;border-top:1px solid #f0f0f0}
+.train-block:first-child{margin-top:0;padding-top:0;border-top:none}
+.train-title{font-size:13px;font-weight:600;color:#444;margin-bottom:6px}
+.train-desc{font-size:12px;color:#888;margin-bottom:6px}
+.train-words{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px}
+.tw{display:inline-block;padding:4px 10px;border-radius:14px;font-size:12px;background:#fef3c7;border:1px solid #f59e0b;color:#92400e}
+.tw.fw{background:#dbeafe;border-color:#3b82f6;color:#1e40af}
+.tw.da{background:#fee2e2;border-color:#ef4444;color:#991b1b}
+.train-sentence{font-size:12px;color:#666;background:#f9fafb;padding:8px;border-radius:8px;margin-top:4px;line-height:1.6}
+.train-sentences{margin-top:4px}
+.ts{font-size:12px;color:#666;padding:4px 0;line-height:1.5}
+.train-grid{display:flex;flex-direction:column;gap:6px}
+.tw-card{display:flex;align-items:center;gap:6px;padding:6px 10px;background:#fef3c7;border-radius:10px;font-size:12px}
+.tw-card strong{color:#92400e}
+.tw-err{color:#bbb;font-size:11px;text-decoration:line-through;flex:1}
+.tw-n{color:#f59e0b;font-weight:700;font-size:11px}
+.tp-card{display:flex;align-items:center;gap:6px;padding:6px 10px;background:#f0fdf4;border-radius:10px;font-size:12px}
+.tp-correct{color:#22c55e;font-weight:600}
+.tp-wrong{color:#ef4444;font-weight:600}
+.tp-drill{color:#888;font-size:11px;flex:1}
+.train-tip{font-size:12px;color:#3b82f6;background:#eff6ff;padding:8px;border-radius:8px;margin-top:4px}
+.disclaimer{background:#fefce8;border:1px solid #fde68a}
+.disclaimer p{font-size:11px;color:#92400e;line-height:1.6}
+.footer{text-align:center;color:#bbb;font-size:10px;padding:16px 0}
+</style>
+</head>
+<body>
+<div class="banner">
+  <div class="banner-stars">⭐ 🌟 ✨</div>
+  <div class="banner-label">✦ 朗 读 评 测 报 告 ✦</div>
+  <h1 class="banner-name">小雨</h1>
+  <div class="banner-sub">《The Baobab》 · Level M · 第 942 个作品</div>
+  <div class="banner-flex">
+    <svg width="110" height="110" viewBox="0 0 110 110">
+  <circle cx="55.0" cy="55.0" r="51.5" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="7"/>
+  <circle cx="55.0" cy="55.0" r="51.5" fill="none" stroke="#fff" stroke-width="7"
+    stroke-linecap="round" stroke-dasharray="323.58377" stroke-dashoffset="100.89341948600003"
+    transform="rotate(-90, 55.0, 55.0)"/>
+  <text x="55.0" y="53.0" text-anchor="middle" fill="#fff" font-size="24.2" font-weight="bold">69%</text>
+  <text x="55.0" y="71.0" text-anchor="middle" fill="rgba(255,255,255,0.7)" font-size="11.0">准确率</text>
+</svg>
+    <div class="banner-side">
+      <div class="banner-big">542</div>
+      <div class="banner-sm">原文总词数</div>
+      <div class="banner-big" style="font-size:18px;margin-top:8px">92 分</div>
+      <div class="banner-sm">ABC Reading 评分</div>
+    </div>
+  </div>
+  <div class="banner-ts">2026-06-26 05:48</div>
+</div>
+<div class="content">
+<div class="card"><h3>📊 六维评分</h3>
+  <div class="s-grid"><div class="s-row">
+  <span class="s-icon">🎯</span>
+  <span class="s-label">发音准确率</span>
+  <span class="s-val" style="color:#f59e0b">19.8/30</span>
+  <svg width="70" height="6" style="vertical-align:middle;border-radius:3.0px">
+  <rect width="70" height="6" rx="3.0" fill="#e5e7eb"/>
+  <rect width="46" height="6" rx="3.0" fill="#f59e0b"/>
+</svg>
+</div><div class="s-row">
+  <span class="s-icon">🔊</span>
+  <span class="s-label">尾音保留</span>
+  <span class="s-val" style="color:#ef4444">4.3/20</span>
+  <svg width="70" height="6" style="vertical-align:middle;border-radius:3.0px">
+  <rect width="70" height="6" rx="3.0" fill="#e5e7eb"/>
+  <rect width="15" height="6" rx="3.0" fill="#ef4444"/>
+</svg>
+</div><div class="s-row">
+  <span class="s-icon">📈</span>
+  <span class="s-label">单词重音</span>
+  <span class="s-val" style="color:#ef4444">0.0/15</span>
+  <svg width="70" height="6" style="vertical-align:middle;border-radius:3.0px">
+  <rect width="70" height="6" rx="3.0" fill="#e5e7eb"/>
+  <rect width="0" height="6" rx="3.0" fill="#ef4444"/>
+</svg>
+</div><div class="s-row">
+  <span class="s-icon">⏸️</span>
+  <span class="s-label">停顿意识</span>
+  <span class="s-val" style="color:#f59e0b">7.9/15</span>
+  <svg width="70" height="6" style="vertical-align:middle;border-radius:3.0px">
+  <rect width="70" height="6" rx="3.0" fill="#e5e7eb"/>
+  <rect width="36" height="6" rx="3.0" fill="#f59e0b"/>
+</svg>
+</div><div class="s-row">
+  <span class="s-icon">🔉</span>
+  <span class="s-label">音量清晰</span>
+  <span class="s-val" style="color:#f59e0b">6.9/10</span>
+  <svg width="70" height="6" style="vertical-align:middle;border-radius:3.0px">
+  <rect width="70" height="6" rx="3.0" fill="#e5e7eb"/>
+  <rect width="48" height="6" rx="3.0" fill="#f59e0b"/>
+</svg>
+</div><div class="s-row">
+  <span class="s-icon">📋</span>
+  <span class="s-label">完整性</span>
+  <span class="s-val" style="color:#22c55e">10.0/10</span>
+  <svg width="70" height="6" style="vertical-align:middle;border-radius:3.0px">
+  <rect width="70" height="6" rx="3.0" fill="#e5e7eb"/>
+  <rect width="70" height="6" rx="3.0" fill="#22c55e"/>
+</svg>
+</div></div>
+</div>
+<div class="card result-fail">
+  <div class="result-score">49<span style="font-size:14px;color:rgba(255,255,255,0.7)">/100</span></div>
+  <div class="result-label">❌ 未达到推荐标准</div>
+  <div class="result-detail">通过条件: 总分≥60 且 发音+尾音≥18/50</div>
+</div>
+<div class="card"><h3>🔍 错误分类统计</h3>
+  <div class="err-grid"><div class="err-cat">
+  <div class="err-cat-head">
+    <span>🔤</span>
+    <span class="err-cat-label">辅音替换</span>
+    <span class="err-cat-count">5次</span>
+  </div>
+  <div class="err-cat-tags"><span class="wtag" style="border-color:#14b8a630;background:#14b8a610;color:#14b8a6">dark</span> <span class="wtag" style="border-color:#14b8a630;background:#14b8a610;color:#14b8a6">cloth</span> <span class="wtag" style="border-color:#14b8a630;background:#14b8a610;color:#14b8a6">attach</span> <span class="wtag" style="border-color:#14b8a630;background:#14b8a610;color:#14b8a6">bark</span></div>
+</div><div class="err-cat">
+  <div class="err-cat-head">
+    <span>📖</span>
+    <span class="err-cat-label">功能词 (冠词/介词)</span>
+    <span class="err-cat-count">23次</span>
+  </div>
+  <div class="err-cat-tags"><span class="wtag" style="border-color:#3b82f630;background:#3b82f610;color:#3b82f6">would</span> <span class="wtag" style="border-color:#3b82f630;background:#3b82f610;color:#3b82f6">that</span> <span class="wtag" style="border-color:#3b82f630;background:#3b82f610;color:#3b82f6">did</span> <span class="wtag" style="border-color:#3b82f630;background:#3b82f610;color:#3b82f6">no</span> <span class="wtag" style="border-color:#3b82f630;background:#3b82f610;color:#3b82f6">their</span> <span class="wtag" style="border-color:#3b82f630;background:#3b82f610;color:#3b82f6">a</span> <span class="wtag" style="border-color:#3b82f630;background:#3b82f610;color:#3b82f6">the</span> <span class="wtag" style="border-color:#3b82f630;background:#3b82f610;color:#3b82f6">its</span> <span class="wtag" style="border-color:#3b82f630;background:#3b82f610;color:#3b82f6">so</span> <span class="wtag" style="border-color:#3b82f630;background:#3b82f610;color:#3b82f6">for</span> <span class="wtag" style="border-color:#3b82f630;background:#3b82f610;color:#3b82f6">it</span> <span class="wtag" style="border-color:#3b82f630;background:#3b82f610;color:#3b82f6">of</span></div>
+</div><div class="err-cat">
+  <div class="err-cat-head">
+    <span>🔊</span>
+    <span class="err-cat-label">尾音 -ed</span>
+    <span class="err-cat-count">3次</span>
+  </div>
+  <div class="err-cat-tags"><span class="wtag" style="border-color:#f59e0b30;background:#f59e0b10;color:#f59e0b">picked</span> <span class="wtag" style="border-color:#f59e0b30;background:#f59e0b10;color:#f59e0b">used</span> <span class="wtag" style="border-color:#f59e0b30;background:#f59e0b10;color:#f59e0b">barrel-shaped</span></div>
+</div><div class="err-cat">
+  <div class="err-cat-head">
+    <span>❓</span>
+    <span class="err-cat-label">grammatical_-er</span>
+    <span class="err-cat-count">1次</span>
+  </div>
+  <div class="err-cat-tags"><span class="wtag" style="border-color:#99930;background:#99910;color:#999">warmer</span></div>
+</div><div class="err-cat">
+  <div class="err-cat-head">
+    <span>🔊</span>
+    <span class="err-cat-label">尾音 -ing</span>
+    <span class="err-cat-count">3次</span>
+  </div>
+  <div class="err-cat-tags"><span class="wtag" style="border-color:#f59e0b30;background:#f59e0b10;color:#f59e0b">dying</span> <span class="wtag" style="border-color:#f59e0b30;background:#f59e0b10;color:#f59e0b">forming</span></div>
+</div><div class="err-cat">
+  <div class="err-cat-head">
+    <span>❓</span>
+    <span class="err-cat-label">grammatical_-ly</span>
+    <span class="err-cat-count">1次</span>
+  </div>
+  <div class="err-cat-tags"><span class="wtag" style="border-color:#99930;background:#99910;color:#999">hopefully</span></div>
+</div><div class="err-cat">
+  <div class="err-cat-head">
+    <span>🔊</span>
+    <span class="err-cat-label">尾音 -s/es</span>
+    <span class="err-cat-count">38次</span>
+  </div>
+  <div class="err-cat-tags"><span class="wtag" style="border-color:#f59e0b30;background:#f59e0b10;color:#f59e0b">insects</span> <span class="wtag" style="border-color:#f59e0b30;background:#f59e0b10;color:#f59e0b">branches</span> <span class="wtag" style="border-color:#f59e0b30;background:#f59e0b10;color:#f59e0b">gifts</span> <span class="wtag" style="border-color:#f59e0b30;background:#f59e0b10;color:#f59e0b">makes</span> <span class="wtag" style="border-color:#f59e0b30;background:#f59e0b10;color:#f59e0b">bakes</span> <span class="wtag" style="border-color:#f59e0b30;background:#f59e0b10;color:#f59e0b">baobabs</span> <span class="wtag" style="border-color:#f59e0b30;background:#f59e0b10;color:#f59e0b">trees</span> <span class="wtag" style="border-color:#f59e0b30;background:#f59e0b10;color:#f59e0b">meters</span> <span class="wtag" style="border-color:#f59e0b30;background:#f59e0b10;color:#f59e0b">vitamins</span> <span class="wtag" style="border-color:#f59e0b30;background:#f59e0b10;color:#f59e0b">trunks</span> <span class="wtag" style="border-color:#f59e0b30;background:#f59e0b10;color:#f59e0b">leaves</span> <span class="wtag" style="border-color:#f59e0b30;background:#f59e0b10;color:#f59e0b">bats</span></div>
+</div><div class="err-cat">
+  <div class="err-cat-head">
+    <span>❓</span>
+    <span class="err-cat-label">其他错误</span>
+    <span class="err-cat-count">62次</span>
+  </div>
+  <div class="err-cat-tags"><span class="wtag" style="border-color:#6b728030;background:#6b728010;color:#6b7280">hard</span> <span class="wtag" style="border-color:#6b728030;background:#6b728010;color:#6b7280">nectar</span> <span class="wtag" style="border-color:#6b728030;background:#6b728010;color:#6b7280">ancient</span> <span class="wtag" style="border-color:#6b728030;background:#6b728010;color:#6b7280">too</span> <span class="wtag" style="border-color:#6b728030;background:#6b728010;color:#6b7280">without</span> <span class="wtag" style="border-color:#6b728030;background:#6b728010;color:#6b7280">2005</span> <span class="wtag" style="border-color:#6b728030;background:#6b728010;color:#6b7280">sweet</span> <span class="wtag" style="border-color:#6b728030;background:#6b728010;color:#6b7280">earth</span> <span class="wtag" style="border-color:#6b728030;background:#6b728010;color:#6b7280">trunk</span> <span class="wtag" style="border-color:#6b728030;background:#6b728010;color:#6b7280">spread</span> <span class="wtag" style="border-color:#6b728030;background:#6b728010;color:#6b7280">calcium</span> <span class="wtag" style="border-color:#6b728030;background:#6b728010;color:#6b7280">shade</span></div>
+</div><div class="err-cat">
+  <div class="err-cat-head">
+    <span>📈</span>
+    <span class="err-cat-label">多音节词/重音</span>
+    <span class="err-cat-count">8次</span>
+  </div>
+  <div class="err-cat-tags"><span class="wtag" style="border-color:#8b5cf630;background:#8b5cf610;color:#8b5cf6">orange</span> <span class="wtag" style="border-color:#8b5cf630;background:#8b5cf610;color:#8b5cf6">wildlife</span> <span class="wtag" style="border-color:#8b5cf630;background:#8b5cf610;color:#8b5cf6">savanna</span> <span class="wtag" style="border-color:#8b5cf630;background:#8b5cf610;color:#8b5cf6">plentiful</span> <span class="wtag" style="border-color:#8b5cf630;background:#8b5cf610;color:#8b5cf6">vitamin</span> <span class="wtag" style="border-color:#8b5cf630;background:#8b5cf610;color:#8b5cf6">africa</span> <span class="wtag" style="border-color:#8b5cf630;background:#8b5cf610;color:#8b5cf6">several</span></div>
+</div><div class="err-cat">
+  <div class="err-cat-head">
+    <span>🔤</span>
+    <span class="err-cat-label">元音替换</span>
+    <span class="err-cat-count">9次</span>
+  </div>
+  <div class="err-cat-tags"><span class="wtag" style="border-color:#ec489930;background:#ec489910;color:#ec4899">weave</span> <span class="wtag" style="border-color:#ec489930;background:#ec489910;color:#ec4899">plains</span> <span class="wtag" style="border-color:#ec489930;background:#ec489910;color:#ec4899">coating</span> <span class="wtag" style="border-color:#ec489930;background:#ec489910;color:#ec4899">dye</span> <span class="wtag" style="border-color:#ec489930;background:#ec489910;color:#ec4899">still</span> <span class="wtag" style="border-color:#ec489930;background:#ec489910;color:#ec4899">baobab's</span> <span class="wtag" style="border-color:#ec489930;background:#ec489910;color:#ec4899">give</span></div>
+</div></div>
+</div>
+<h3 style="font-size:14px;color:#555;margin:10px 12px 6px;display:flex;align-items:center;gap:6px">📄 逐页分析</h3>
+<div class="page">
+  <div class="page-hd">
+    <div class="page-num">1</div>
+    <div class="page-info">
+      <div class="page-acc" style="color:#f59e0b">79.4%</div>
+      <span class="badge sub">替换 11</span> <span class="badge del">漏读 2</span> <span class="badge ins">多读 14</span> <span class="badge" style="background:#6366f1">🎵 声学63%</span> <span class="badge" style="background:#10b981">💨 流利47%</span> 
+    </div>
+  </div>
+  <div class="page-body">
+    <div class="page-text"><span class="w-err">The<span class="w-read">→lyswena</span></span> <span class="w-err">Lands<span class="w-read">→length</span></span> <span class="w-err">of<span class="w-read">→thousand</span></span> <span class="w-correct">Africa</span> <span class="w-correct">Africa</span> <span class="w-correct">has</span> <span class="w-correct">large,</span> <span class="w-correct">sandy</span> <span class="w-correct">deserts.</span> <span class="w-correct">It</span> <span class="w-correct">has</span> <span class="w-correct">thick,</span> <span class="w-err">dark<span class="w-read">→hard</span></span> <span class="w-correct">jungles.</span> <span class="w-correct">It</span> <span class="w-correct">also</span> <span class="w-correct">has</span> <span class="w-correct">open,</span> <span class="w-correct">grassy</span> <span class="w-err">plains.<span class="w-read">→plants</span></span> <span class="w-err">The<span class="w-read">→lyswena</span></span> <span class="w-err">plains,<span class="w-read">→plants</span></span> <span class="w-err">known<span class="w-read">→know</span></span> <span class="w-correct">as</span> <span class="w-err">the<span class="w-read">→lyswena</span></span> <span class="w-correct">African</span> <span class="w-del">savanna,</span> <span class="w-correct">are</span> <span class="w-correct">not</span> <span class="w-correct">just</span> <span class="w-correct">made</span> <span class="w-correct">up</span> <span class="w-err">of<span class="w-read">→thousand</span></span> <span class="w-correct">grass,</span> <span class="w-correct">however.</span> <span class="w-err">Strange,<span class="w-read">→strained</span></span> <span class="w-err">ancient<span class="w-read">→in</span></span> <span class="w-correct">trees</span> <span class="w-correct">grow</span> <span class="w-correct">there,</span> <span class="w-correct">too.</span> <span class="w-correct">They</span> <span class="w-correct">are</span> <span class="w-correct">called</span> <span class="w-err">baobabs.<span class="w-read">→bob</span></span> <span class="w-correct">These</span> <span class="w-correct">"trees</span> <span class="w-err">of<span class="w-read">→thousand</span></span> <span class="w-correct">life"</span> <span class="w-correct">have</span> <span class="w-correct">helped</span> <span class="w-err">the<span class="w-read">→lyswena</span></span> <span class="w-correct">people</span> <span class="w-correct">and</span> <span class="w-correct">other</span> <span class="w-correct">animals</span> <span class="w-err">of<span class="w-read">→thousand</span></span> <span class="w-err">the<span class="w-read">→lyswena</span></span> <span class="w-del">savanna</span> <span class="w-correct">for</span> <span class="w-err">thousands<span class="w-read">→a</span></span> <span class="w-err">of<span class="w-read">→thousand</span></span> <span class="w-del">years.</span></div>
+    <div class="ap" style="border-color:#667eea">
+  <span class="ap-icon">🎧</span>
+  <span class="ap-label">原音</span>
+  <audio controls preload="metadata" style="width:100%;height:36px">
+    <source src="https://lighthouse-file.abctime.com/assets/audio/mpeg/1758017431278745_p1.mp3" type="audio/wav">
+    <source src="https://lighthouse-file.abctime.com/assets/audio/mpeg/1758017431278745_p1.mp3" type="audio/mpeg">
+  </audio>
+</div><div class="ap" style="border-color:#f093fb">
+  <span class="ap-icon">🎙️</span>
+  <span class="ap-label">跟读</span>
+  <audio controls preload="metadata" style="width:100%;height:36px">
+    <source src="https://oaudios.abctime.com/abcreading/2026/06/24/13077288/books/oss_audio_1782343428273.wav" type="audio/wav">
+    <source src="https://oaudios.abctime.com/abcreading/2026/06/24/13077288/books/oss_audio_1782343428273.wav" type="audio/mpeg">
+  </audio>
+</div>
+  </div>
+</div>
+<div class="page">
+  <div class="page-hd">
+    <div class="page-num">2</div>
+    <div class="page-info">
+      <div class="page-acc" style="color:#f59e0b">57.6%</div>
+      <span class="badge sub">替换 13</span> <span class="badge del">漏读 1</span> <span class="badge ins">多读 6</span> <span class="badge" style="background:#6366f1">🎵 声学65%</span> <span class="badge" style="background:#10b981">💨 流利48%</span> 
+    </div>
+  </div>
+  <div class="page-body">
+    <div class="page-text"><span class="w-err">Giants<span class="w-read">→giant</span></span> <span class="w-correct">of</span> <span class="w-err">the<span class="w-read">→lissaman</span></span> <span class="w-del">Savanna</span> <span class="w-correct">Finding</span> <span class="w-correct">a</span> <span class="w-err">baobab<span class="w-read">→above</span></span> <span class="w-correct">is</span> <span class="w-correct">easy.</span> <span class="w-correct">These</span> <span class="w-err">trees<span class="w-read">→three</span></span> <span class="w-err">rise<span class="w-read">→are</span></span> <span class="w-correct">high</span> <span class="w-correct">above</span> <span class="w-err">the<span class="w-read">→lissaman</span></span> <span class="w-correct">flat</span> <span class="w-err">plains.<span class="w-read">→plain</span></span> <span class="w-correct">A</span> <span class="w-err">full-grown<span class="w-read">→few</span></span> <span class="w-err">baobab<span class="w-read">→above</span></span> <span class="w-correct">can</span> <span class="w-correct">be</span> <span class="w-err">18<span class="w-read">→mid</span></span> <span class="w-err">meters<span class="w-read">→a</span></span> <span class="w-correct">(59</span> <span class="w-correct">ft.)</span> <span class="w-correct">tall.</span> <span class="w-err">That's<span class="w-read">→let's</span></span> <span class="w-correct">taller</span> <span class="w-correct">than</span> <span class="w-correct">a</span> <span class="w-correct">five-story</span> <span class="w-correct">building!</span></div>
+    <div class="ap" style="border-color:#667eea">
+  <span class="ap-icon">🎧</span>
+  <span class="ap-label">原音</span>
+  <audio controls preload="metadata" style="width:100%;height:36px">
+    <source src="https://lighthouse-file.abctime.com/assets/audio/mpeg/1758017432405268_p2.mp3" type="audio/wav">
+    <source src="https://lighthouse-file.abctime.com/assets/audio/mpeg/1758017432405268_p2.mp3" type="audio/mpeg">
+  </audio>
+</div><div class="ap" style="border-color:#f093fb">
+  <span class="ap-icon">🎙️</span>
+  <span class="ap-label">跟读</span>
+  <audio controls preload="metadata" style="width:100%;height:36px">
+    <source src="https://oaudios.abctime.com/abcreading/2026/06/24/13077288/books/oss_audio_1782343476277.wav" type="audio/wav">
+    <source src="https://oaudios.abctime.com/abcreading/2026/06/24/13077288/books/oss_audio_1782343476277.wav" type="audio/mpeg">
+  </audio>
+</div>
+  </div>
+</div>
+<div class="page">
+  <div class="page-hd">
+    <div class="page-num">3</div>
+    <div class="page-info">
+      <div class="page-acc" style="color:#f59e0b">70.3%</div>
+      <span class="badge sub">替换 18</span> <span class="badge del">漏读 4</span> <span class="badge ins">多读 12</span> <span class="badge" style="background:#6366f1">🎵 声学62%</span> <span class="badge" style="background:#10b981">💨 流利45%</span> 
+    </div>
+  </div>
+  <div class="page-body">
+    <div class="page-text"><span class="w-err">Baobab<span class="w-read">→bill</span></span> <span class="w-correct">trees</span> <span class="w-correct">have</span> <span class="w-correct">thick,</span> <span class="w-err">barrel-shaped<span class="w-read">→big</span></span> <span class="w-correct">trunks.</span> <span class="w-correct">The</span> <span class="w-correct">oldest</span> <span class="w-correct">trees</span> <span class="w-correct">have</span> <span class="w-correct">trunks</span> <span class="w-err">that<span class="w-read">→let's</span></span> <span class="w-correct">are</span> <span class="w-correct">9</span> <span class="w-correct">meters</span> <span class="w-correct">(30</span> <span class="w-correct">ft.)</span> <span class="w-correct">across.</span> <span class="w-del">Like</span> <span class="w-del">barrels,</span> <span class="w-correct">the</span> <span class="w-correct">trunks</span> <span class="w-correct">hold</span> <span class="w-err">a<span class="w-read">→up</span></span> <span class="w-err">lot<span class="w-read">→lots</span></span> <span class="w-correct">of</span> <span class="w-correct">water.</span> <span class="w-correct">This</span> <span class="w-del">is</span> <span class="w-correct">important</span> <span class="w-correct">because</span> <span class="w-correct">the</span> <span class="w-correct">savanna</span> <span class="w-del">is</span> <span class="w-err">a<span class="w-read">→up</span></span> <span class="w-correct">dry</span> <span class="w-correct">place.</span> <span class="w-correct">Being</span> <span class="w-correct">able</span> <span class="w-correct">to</span> <span class="w-correct">store</span> <span class="w-correct">water</span> <span class="w-correct">helps</span> <span class="w-err">baobabs<span class="w-read">→for</span></span> <span class="w-correct">survive</span> <span class="w-correct">in</span> <span class="w-correct">the</span> <span class="w-correct">savanna.</span> <span class="w-err">Baobabs<span class="w-read">→for</span></span> <span class="w-correct">also</span> <span class="w-correct">have</span> <span class="w-err">strange<span class="w-read">→drenched</span></span> <span class="w-err">branches.<span class="w-read">→are</span></span> <span class="w-err">Their<span class="w-read">→they</span></span> <span class="w-err">branches<span class="w-read">→are</span></span> <span class="w-err">spread<span class="w-read">→branched</span></span> <span class="w-correct">out</span> <span class="w-del">like</span> <span class="w-err">roots.<span class="w-read">→a</span></span> <span class="w-correct">When</span> <span class="w-err">a<span class="w-read">→up</span></span> <span class="w-err">baobab<span class="w-read">→bill</span></span> <span class="w-err">sheds<span class="w-read">→shade</span></span> <span class="w-err">its<span class="w-read">→is</span></span> <span class="w-err">leaves,<span class="w-read">→leaf</span></span> <span class="w-correct">the</span> <span class="w-correct">tree</span> <span class="w-correct">looks</span> <span class="w-correct">as</span> <span class="w-correct">if</span> <span class="w-err">it<span class="w-read">→it's</span></span> <span class="w-del">is</span> <span class="w-correct">upside</span> <span class="w-del">down!</span></div>
+    <div class="ap" style="border-color:#667eea">
+  <span class="ap-icon">🎧</span>
+  <span class="ap-label">原音</span>
+  <audio controls preload="metadata" style="width:100%;height:36px">
+    <source src="https://lighthouse-file.abctime.com/assets/audio/mpeg/1758017432705095_p3.mp3" type="audio/wav">
+    <source src="https://lighthouse-file.abctime.com/assets/audio/mpeg/1758017432705095_p3.mp3" type="audio/mpeg">
+  </audio>
+</div><div class="ap" style="border-color:#f093fb">
+  <span class="ap-icon">🎙️</span>
+  <span class="ap-label">跟读</span>
+  <audio controls preload="metadata" style="width:100%;height:36px">
+    <source src="https://oaudios.abctime.com/abcreading/2026/06/24/13077288/books/oss_audio_1782343587077.wav" type="audio/wav">
+    <source src="https://oaudios.abctime.com/abcreading/2026/06/24/13077288/books/oss_audio_1782343587077.wav" type="audio/mpeg">
+  </audio>
+</div>
+  </div>
+</div>
+<div class="page">
+  <div class="page-hd">
+    <div class="page-num">4</div>
+    <div class="page-info">
+      <div class="page-acc" style="color:#f59e0b">67.7%</div>
+      <span class="badge sub">替换 11</span> <span class="badge ins">多读 6</span> <span class="badge" style="background:#6366f1">🎵 声学62%</span> <span class="badge" style="background:#10b981">💨 流利47%</span> 
+    </div>
+  </div>
+  <div class="page-body">
+    <div class="page-text"><span class="w-err">The<span class="w-read">→la</span></span> <span class="w-err">Baobab's<span class="w-read">→billbabs</span></span> <span class="w-err">Gifts<span class="w-read">→get</span></span> <span class="w-err">The<span class="w-read">→la</span></span> <span class="w-err">wildlife<span class="w-read">→wild</span></span> <span class="w-correct">and</span> <span class="w-correct">people</span> <span class="w-correct">of</span> <span class="w-err">the<span class="w-read">→la</span></span> <span class="w-correct">savanna</span> <span class="w-err">get<span class="w-read">→gets</span></span> <span class="w-correct">many</span> <span class="w-correct">things</span> <span class="w-correct">from</span> <span class="w-err">the<span class="w-read">→la</span></span> <span class="w-err">baobab.<span class="w-read">→billbabs</span></span> <span class="w-err">The<span class="w-read">→la</span></span> <span class="w-err">tree's<span class="w-read">→tree</span></span> <span class="w-correct">soft</span> <span class="w-correct">wood</span> <span class="w-correct">is</span> <span class="w-correct">filled</span> <span class="w-correct">with</span> <span class="w-correct">water.</span> <span class="w-err">The<span class="w-read">→la</span></span> <span class="w-err">leafy<span class="w-read">→leaf</span></span> <span class="w-err">branches<span class="w-read">→the</span></span> <span class="w-err">give<span class="w-read">→leaf</span></span> <span class="w-correct">cool</span> <span class="w-err">shade<span class="w-read">→shadow</span></span> <span class="w-correct">from</span> <span class="w-err">the<span class="w-read">→la</span></span> <span class="w-correct">hot</span> <span class="w-correct">Sun.</span></div>
+    <div class="ap" style="border-color:#667eea">
+  <span class="ap-icon">🎧</span>
+  <span class="ap-label">原音</span>
+  <audio controls preload="metadata" style="width:100%;height:36px">
+    <source src="https://lighthouse-file.abctime.com/assets/audio/mpeg/1758017433003465_p4.mp3" type="audio/wav">
+    <source src="https://lighthouse-file.abctime.com/assets/audio/mpeg/1758017433003465_p4.mp3" type="audio/mpeg">
+  </audio>
+</div><div class="ap" style="border-color:#f093fb">
+  <span class="ap-icon">🎙️</span>
+  <span class="ap-label">跟读</span>
+  <audio controls preload="metadata" style="width:100%;height:36px">
+    <source src="https://oaudios.abctime.com/abcreading/2026/06/24/13077288/books/oss_audio_1782343642531.wav" type="audio/wav">
+    <source src="https://oaudios.abctime.com/abcreading/2026/06/24/13077288/books/oss_audio_1782343642531.wav" type="audio/mpeg">
+  </audio>
+</div>
+  </div>
+</div>
+<div class="page">
+  <div class="page-hd">
+    <div class="page-num">5</div>
+    <div class="page-info">
+      <div class="page-acc" style="color:#f59e0b">63.9%</div>
+      <span class="badge sub">替换 13</span> <span class="badge ins">多读 2</span> <span class="badge" style="background:#6366f1">🎵 声学61%</span> <span class="badge" style="background:#10b981">💨 流利64%</span> 
+    </div>
+  </div>
+  <div class="page-body">
+    <div class="page-text"><span class="w-err">Bats<span class="w-read">→that</span></span> <span class="w-correct">drink</span> <span class="w-err">sweet<span class="w-read">→with</span></span> <span class="w-err">nectar<span class="w-read">→water</span></span> <span class="w-correct">from</span> <span class="w-correct">the</span> <span class="w-err">tree's<span class="w-read">→trees</span></span> <span class="w-correct">white</span> <span class="w-correct">flowers.</span> <span class="w-correct">The</span> <span class="w-correct">flowers</span> <span class="w-correct">grow</span> <span class="w-correct">into</span> <span class="w-err">fruit.<span class="w-read">→fruits</span></span> <span class="w-correct">The</span> <span class="w-err">fruit<span class="w-read">→fruits</span></span> <span class="w-err">bakes<span class="w-read">→bang</span></span> <span class="w-correct">in</span> <span class="w-correct">the</span> <span class="w-correct">sun</span> <span class="w-correct">and</span> <span class="w-err">dries.<span class="w-read">→dry</span></span> <span class="w-err">Its<span class="w-read">→it's</span></span> <span class="w-correct">green</span> <span class="w-err">coating<span class="w-read">→causing</span></span> <span class="w-err">turns<span class="w-read">→turn</span></span> <span class="w-correct">into</span> <span class="w-correct">a</span> <span class="w-err">hard<span class="w-read">→heart</span></span> <span class="w-correct">shell.</span> <span class="w-correct">Then</span> <span class="w-correct">it</span> <span class="w-correct">is</span> <span class="w-err">picked<span class="w-read">→peaking</span></span> <span class="w-correct">by</span> <span class="w-correct">hand.</span></div>
+    <div class="ap" style="border-color:#667eea">
+  <span class="ap-icon">🎧</span>
+  <span class="ap-label">原音</span>
+  <audio controls preload="metadata" style="width:100%;height:36px">
+    <source src="https://lighthouse-file.abctime.com/assets/audio/mpeg/1758017433307257_p5.mp3" type="audio/wav">
+    <source src="https://lighthouse-file.abctime.com/assets/audio/mpeg/1758017433307257_p5.mp3" type="audio/mpeg">
+  </audio>
+</div><div class="ap" style="border-color:#f093fb">
+  <span class="ap-icon">🎙️</span>
+  <span class="ap-label">跟读</span>
+  <audio controls preload="metadata" style="width:100%;height:36px">
+    <source src="https://oaudios.abctime.com/abcreading/2026/06/24/13077288/books/oss_audio_1782343681523.wav" type="audio/wav">
+    <source src="https://oaudios.abctime.com/abcreading/2026/06/24/13077288/books/oss_audio_1782343681523.wav" type="audio/mpeg">
+  </audio>
+</div>
+  </div>
+</div>
+<div class="page">
+  <div class="page-hd">
+    <div class="page-num">6</div>
+    <div class="page-info">
+      <div class="page-acc" style="color:#f59e0b">73.8%</div>
+      <span class="badge sub">替换 10</span> <span class="badge del">漏读 1</span> <span class="badge ins">多读 8</span> <span class="badge" style="background:#6366f1">🎵 声学63%</span> <span class="badge" style="background:#10b981">💨 流利55%</span> 
+    </div>
+  </div>
+  <div class="page-body">
+    <div class="page-text"><span class="w-err">Baobab<span class="w-read">→well</span></span> <span class="w-err">fruit<span class="w-read">→bob</span></span> <span class="w-correct">is</span> <span class="w-err">packed<span class="w-read">→baked</span></span> <span class="w-err">with<span class="w-read">→baked</span></span> <span class="w-err">vitamins.<span class="w-read">→baked</span></span> <span class="w-correct">It</span> <span class="w-correct">has</span> <span class="w-correct">more</span> <span class="w-err">vitamin<span class="w-read">→windmency</span></span> <span class="w-del">C</span> <span class="w-correct">than</span> <span class="w-correct">an</span> <span class="w-err">orange<span class="w-read">→o-ring</span></span> <span class="w-correct">and</span> <span class="w-err">as<span class="w-read">→milk</span></span> <span class="w-correct">much</span> <span class="w-err">calcium<span class="w-read">→clam</span></span> <span class="w-err">as<span class="w-read">→milk</span></span> <span class="w-correct">milk!</span> <span class="w-correct">People</span> <span class="w-correct">use</span> <span class="w-correct">the</span> <span class="w-err">fruit<span class="w-read">→bob</span></span> <span class="w-correct">to</span> <span class="w-correct">make</span> <span class="w-correct">a</span> <span class="w-correct">healthy,</span> <span class="w-correct">tasty</span> <span class="w-correct">drink.</span> <span class="w-correct">It</span> <span class="w-correct">can</span> <span class="w-correct">also</span> <span class="w-correct">be</span> <span class="w-correct">used</span> <span class="w-correct">to</span> <span class="w-correct">make</span> <span class="w-correct">a</span> <span class="w-correct">kind</span> <span class="w-correct">of</span> <span class="w-correct">ice</span> <span class="w-correct">cream.</span></div>
+    <div class="ap" style="border-color:#667eea">
+  <span class="ap-icon">🎧</span>
+  <span class="ap-label">原音</span>
+  <audio controls preload="metadata" style="width:100%;height:36px">
+    <source src="https://lighthouse-file.abctime.com/assets/audio/mpeg/1758017433548948_p6.mp3" type="audio/wav">
+    <source src="https://lighthouse-file.abctime.com/assets/audio/mpeg/1758017433548948_p6.mp3" type="audio/mpeg">
+  </audio>
+</div><div class="ap" style="border-color:#f093fb">
+  <span class="ap-icon">🎙️</span>
+  <span class="ap-label">跟读</span>
+  <audio controls preload="metadata" style="width:100%;height:36px">
+    <source src="https://oaudios.abctime.com/abcreading/2026/06/24/13077288/books/oss_audio_1782343742723.wav" type="audio/wav">
+    <source src="https://oaudios.abctime.com/abcreading/2026/06/24/13077288/books/oss_audio_1782343742723.wav" type="audio/mpeg">
+  </audio>
+</div>
+  </div>
+</div>
+<div class="page">
+  <div class="page-hd">
+    <div class="page-num">7</div>
+    <div class="page-info">
+      <div class="page-acc" style="color:#f59e0b">72.2%</div>
+      <span class="badge sub">替换 10</span> <span class="badge" style="background:#6366f1">🎵 声学65%</span> <span class="badge" style="background:#10b981">💨 流利46%</span> 
+    </div>
+  </div>
+  <div class="page-body">
+    <div class="page-text"><span class="w-correct">A</span> <span class="w-correct">Different</span> <span class="w-correct">Kind</span> <span class="w-correct">of</span> <span class="w-correct">Tree</span> <span class="w-correct">House</span> <span class="w-err">Baobab<span class="w-read">→build</span></span> <span class="w-correct">trees</span> <span class="w-correct">are</span> <span class="w-correct">useful</span> <span class="w-correct">in</span> <span class="w-correct">other</span> <span class="w-correct">ways,</span> <span class="w-correct">too.</span> <span class="w-correct">People</span> <span class="w-err">weave<span class="w-read">→waves</span></span> <span class="w-err">long<span class="w-read">→drones</span></span> <span class="w-err">strings<span class="w-read">→dream</span></span> <span class="w-correct">from</span> <span class="w-correct">the</span> <span class="w-err">tree's<span class="w-read">→trees</span></span> <span class="w-err">bark<span class="w-read">→bank</span></span> <span class="w-correct">to</span> <span class="w-correct">make</span> <span class="w-err">cloth,<span class="w-read">→close</span></span> <span class="w-correct">rope,</span> <span class="w-correct">and</span> <span class="w-err">baskets.<span class="w-read">→basket</span></span> <span class="w-correct">They</span> <span class="w-correct">use</span> <span class="w-correct">the</span> <span class="w-err">roots<span class="w-read">→rope</span></span> <span class="w-correct">to</span> <span class="w-correct">make</span> <span class="w-correct">red</span> <span class="w-err">dye.<span class="w-read">→dry</span></span></div>
+    <div class="ap" style="border-color:#667eea">
+  <span class="ap-icon">🎧</span>
+  <span class="ap-label">原音</span>
+  <audio controls preload="metadata" style="width:100%;height:36px">
+    <source src="https://lighthouse-file.abctime.com/assets/audio/mpeg/1758017433802480_p7.mp3" type="audio/wav">
+    <source src="https://lighthouse-file.abctime.com/assets/audio/mpeg/1758017433802480_p7.mp3" type="audio/mpeg">
+  </audio>
+</div><div class="ap" style="border-color:#f093fb">
+  <span class="ap-icon">🎙️</span>
+  <span class="ap-label">跟读</span>
+  <audio controls preload="metadata" style="width:100%;height:36px">
+    <source src="https://oaudios.abctime.com/abcreading/2026/06/24/13077288/books/oss_audio_1782343785639.wav" type="audio/wav">
+    <source src="https://oaudios.abctime.com/abcreading/2026/06/24/13077288/books/oss_audio_1782343785639.wav" type="audio/mpeg">
+  </audio>
+</div>
+  </div>
+</div>
+<div class="page">
+  <div class="page-hd">
+    <div class="page-num">8</div>
+    <div class="page-info">
+      <div class="page-acc" style="color:#f59e0b">68.5%</div>
+      <span class="badge sub">替换 15</span> <span class="badge del">漏读 2</span> <span class="badge ins">多读 3</span> <span class="badge" style="background:#6366f1">🎵 声学60%</span> <span class="badge" style="background:#10b981">💨 流利66%</span> 
+    </div>
+  </div>
+  <div class="page-body">
+    <div class="page-text"><span class="w-correct">The</span> <span class="w-correct">trees</span> <span class="w-correct">also</span> <span class="w-err">give<span class="w-read">→gave</span></span> <span class="w-correct">shelter</span> <span class="w-correct">to</span> <span class="w-correct">animals.</span> <span class="w-err">Insects,<span class="w-read">→in</span></span> <span class="w-err">lizards,<span class="w-read">→fact</span></span> <span class="w-correct">monkeys,</span> <span class="w-correct">and</span> <span class="w-correct">other</span> <span class="w-correct">animals</span> <span class="w-del">live</span> <span class="w-correct">in</span> <span class="w-correct">their</span> <span class="w-err">branches<span class="w-read">→branch</span></span> <span class="w-correct">and</span> <span class="w-err">trunks.<span class="w-read">→tank</span></span> <span class="w-err">Long<span class="w-read">→let</span></span> <span class="w-err">ago,<span class="w-read">→go</span></span> <span class="w-correct">people,</span> <span class="w-err">too,<span class="w-read">→to</span></span> <span class="w-err">used<span class="w-read">→use</span></span> <span class="w-correct">these</span> <span class="w-correct">trees</span> <span class="w-correct">as</span> <span class="w-correct">shelter.</span> <span class="w-correct">They</span> <span class="w-err">did<span class="w-read">→didn't</span></span> <span class="w-del">not</span> <span class="w-correct">make</span> <span class="w-correct">tree</span> <span class="w-err">houses<span class="w-read">→house</span></span> <span class="w-correct">in</span> <span class="w-correct">their</span> <span class="w-err">branches.<span class="w-read">→branch</span></span> <span class="w-correct">They</span> <span class="w-err">did<span class="w-read">→didn't</span></span> <span class="w-del">not</span> <span class="w-correct">cut</span> <span class="w-correct">the</span> <span class="w-err">wood<span class="w-read">→woods</span></span> <span class="w-correct">to</span> <span class="w-correct">build</span> <span class="w-err">houses.<span class="w-read">→house</span></span> <span class="w-correct">Instead,</span> <span class="w-correct">they</span> <span class="w-correct">lived</span> <span class="w-correct">inside</span> <span class="w-correct">a</span> <span class="w-err">tree's<span class="w-read">→tree</span></span> <span class="w-err">hollow<span class="w-read">→trees</span></span> <span class="w-err">trunk!<span class="w-read">→hold</span></span></div>
+    <div class="ap" style="border-color:#667eea">
+  <span class="ap-icon">🎧</span>
+  <span class="ap-label">原音</span>
+  <audio controls preload="metadata" style="width:100%;height:36px">
+    <source src="https://lighthouse-file.abctime.com/assets/audio/mpeg/1758017434052417_p8.mp3" type="audio/wav">
+    <source src="https://lighthouse-file.abctime.com/assets/audio/mpeg/1758017434052417_p8.mp3" type="audio/mpeg">
+  </audio>
+</div><div class="ap" style="border-color:#f093fb">
+  <span class="ap-icon">🎙️</span>
+  <span class="ap-label">跟读</span>
+  <audio controls preload="metadata" style="width:100%;height:36px">
+    <source src="https://oaudios.abctime.com/abcreading/2026/06/24/13077288/books/oss_audio_1782343851820.wav" type="audio/wav">
+    <source src="https://oaudios.abctime.com/abcreading/2026/06/24/13077288/books/oss_audio_1782343851820.wav" type="audio/mpeg">
+  </audio>
+</div>
+  </div>
+</div>
+<div class="page">
+  <div class="page-hd">
+    <div class="page-num">9</div>
+    <div class="page-info">
+      <div class="page-acc" style="color:#f59e0b">52.6%</div>
+      <span class="badge sub">替换 8</span> <span class="badge del">漏读 1</span> <span class="badge" style="background:#6366f1">🎵 声学60%</span> <span class="badge" style="background:#10b981">💨 流利56%</span> 
+    </div>
+  </div>
+  <div class="page-body">
+    <div class="page-text"><span class="w-err">Baobab<span class="w-read">→willberg's</span></span> <span class="w-err">trunks<span class="w-read">→tanks</span></span> <span class="w-correct">have</span> <span class="w-correct">been</span> <span class="w-correct">used</span> <span class="w-err">as<span class="w-read">→a</span></span> <span class="w-err">homes<span class="w-read">→tomb</span></span> <span class="w-correct">and</span> <span class="w-err">barns.<span class="w-read">→barn</span></span> <span class="w-correct">People</span> <span class="w-correct">have</span> <span class="w-correct">found</span> <span class="w-correct">all</span> <span class="w-err">sorts<span class="w-read">→shout</span></span> <span class="w-err">of<span class="w-read">→over</span></span> <span class="w-correct">uses</span> <span class="w-err">for<span class="w-read">→forests</span></span> <span class="w-del">these</span> <span class="w-correct">trees!</span></div>
+    <div class="ap" style="border-color:#667eea">
+  <span class="ap-icon">🎧</span>
+  <span class="ap-label">原音</span>
+  <audio controls preload="metadata" style="width:100%;height:36px">
+    <source src="https://lighthouse-file.abctime.com/assets/audio/mpeg/1758017434304217_p9.mp3" type="audio/wav">
+    <source src="https://lighthouse-file.abctime.com/assets/audio/mpeg/1758017434304217_p9.mp3" type="audio/mpeg">
+  </audio>
+</div><div class="ap" style="border-color:#f093fb">
+  <span class="ap-icon">🎙️</span>
+  <span class="ap-label">跟读</span>
+  <audio controls preload="metadata" style="width:100%;height:36px">
+    <source src="https://oaudios.abctime.com/abcreading/2026/06/24/13077288/books/oss_audio_1782343870694.wav" type="audio/wav">
+    <source src="https://oaudios.abctime.com/abcreading/2026/06/24/13077288/books/oss_audio_1782343870694.wav" type="audio/mpeg">
+  </audio>
+</div>
+  </div>
+</div>
+<div class="page">
+  <div class="page-hd">
+    <div class="page-num">10</div>
+    <div class="page-info">
+      <div class="page-acc" style="color:#f59e0b">63.4%</div>
+      <span class="badge sub">替换 15</span> <span class="badge ins">多读 6</span> <span class="badge" style="background:#6366f1">🎵 声学62%</span> <span class="badge" style="background:#10b981">💨 流利51%</span> 
+    </div>
+  </div>
+  <div class="page-body">
+    <div class="page-text"><span class="w-err">Hollow<span class="w-read">→how</span></span> <span class="w-correct">Trees</span> <span class="w-correct">A</span> <span class="w-err">baobab<span class="w-read">→bill</span></span> <span class="w-correct">is</span> <span class="w-err">hollow<span class="w-read">→how</span></span> <span class="w-correct">because</span> <span class="w-correct">it</span> <span class="w-correct">does</span> <span class="w-correct">not</span> <span class="w-correct">have</span> <span class="w-correct">a</span> <span class="w-err">single<span class="w-read">→tank</span></span> <span class="w-err">trunk.<span class="w-read">→hole</span></span> <span class="w-err">Instead,<span class="w-read">→time</span></span> <span class="w-correct">it</span> <span class="w-correct">has</span> <span class="w-err">several<span class="w-read">→a</span></span> <span class="w-err">stems.<span class="w-read">→servingy</span></span> <span class="w-correct">The</span> <span class="w-err">stems<span class="w-read">→servingy</span></span> <span class="w-correct">grow</span> <span class="w-correct">and</span> <span class="w-err">attach<span class="w-read">→attack</span></span> <span class="w-correct">to</span> <span class="w-correct">each</span> <span class="w-correct">other,</span> <span class="w-err">forming<span class="w-read">→from</span></span> <span class="w-correct">a</span> <span class="w-correct">ring.</span> <span class="w-err">Bark<span class="w-read">→back</span></span> <span class="w-err">covers<span class="w-read">→over</span></span> <span class="w-correct">the</span> <span class="w-err">stems<span class="w-read">→servingy</span></span> <span class="w-correct">and</span> <span class="w-err">makes<span class="w-read">→make</span></span> <span class="w-correct">them</span> <span class="w-correct">look</span> <span class="w-correct">like</span> <span class="w-correct">one</span> <span class="w-err">trunk.<span class="w-read">→hole</span></span></div>
+    <div class="ap" style="border-color:#667eea">
+  <span class="ap-icon">🎧</span>
+  <span class="ap-label">原音</span>
+  <audio controls preload="metadata" style="width:100%;height:36px">
+    <source src="https://lighthouse-file.abctime.com/assets/audio/mpeg/1758017431530393_p10.mp3" type="audio/wav">
+    <source src="https://lighthouse-file.abctime.com/assets/audio/mpeg/1758017431530393_p10.mp3" type="audio/mpeg">
+  </audio>
+</div><div class="ap" style="border-color:#f093fb">
+  <span class="ap-icon">🎙️</span>
+  <span class="ap-label">跟读</span>
+  <audio controls preload="metadata" style="width:100%;height:36px">
+    <source src="https://oaudios.abctime.com/abcreading/2026/06/24/13077288/books/oss_audio_1782343963427.wav" type="audio/wav">
+    <source src="https://oaudios.abctime.com/abcreading/2026/06/24/13077288/books/oss_audio_1782343963427.wav" type="audio/mpeg">
+  </audio>
+</div>
+  </div>
+</div>
+<div class="page">
+  <div class="page-hd">
+    <div class="page-num">11</div>
+    <div class="page-info">
+      <div class="page-acc" style="color:#f59e0b">68.8%</div>
+      <span class="badge sub">替换 19</span> <span class="badge del">漏读 5</span> <span class="badge ins">多读 10</span> <span class="badge" style="background:#6366f1">🎵 声学62%</span> <span class="badge" style="background:#10b981">💨 流利55%</span> 
+    </div>
+  </div>
+  <div class="page-body">
+    <div class="page-text"><span class="w-err">Dying<span class="w-read">→diane</span></span> <span class="w-correct">Giants</span> <span class="w-err">Giant<span class="w-read">→giants</span></span> <span class="w-err">baobab<span class="w-read">→bill</span></span> <span class="w-correct">trees</span> <span class="w-err">have<span class="w-read">→has</span></span> <span class="w-err">stood<span class="w-read">→due</span></span> <span class="w-err">guard<span class="w-read">→to</span></span> <span class="w-correct">in</span> <span class="w-err">Africa<span class="w-read">→every</span></span> <span class="w-correct">for</span> <span class="w-correct">centuries.</span> <span class="w-correct">Sadly,</span> <span class="w-correct">some</span> <span class="w-correct">of</span> <span class="w-del">the</span> <span class="w-correct">oldest</span> <span class="w-correct">ones</span> <span class="w-correct">are</span> <span class="w-err">dying<span class="w-read">→diane</span></span> <span class="w-del">off.</span> <span class="w-correct">At</span> <span class="w-err">least<span class="w-read">→last</span></span> <span class="w-err">nine<span class="w-read">→night</span></span> <span class="w-correct">trees</span> <span class="w-correct">that</span> <span class="w-correct">were</span> <span class="w-correct">thousands</span> <span class="w-correct">of</span> <span class="w-correct">years</span> <span class="w-correct">old</span> <span class="w-err">have<span class="w-read">→has</span></span> <span class="w-correct">died</span> <span class="w-correct">since</span> <span class="w-err">2005.<span class="w-read">→in</span></span> <span class="w-err">No<span class="w-read">→since</span></span> <span class="w-err">one<span class="w-read">→2000</span></span> <span class="w-del">is</span> <span class="w-correct">sure</span> <span class="w-correct">why</span> <span class="w-del">the</span> <span class="w-correct">trees</span> <span class="w-correct">are</span> <span class="w-err">dying.<span class="w-read">→diane</span></span> <span class="w-correct">Some</span> <span class="w-correct">people</span> <span class="w-err">think<span class="w-read">→say</span></span> <span class="w-del">the</span> <span class="w-correct">trees</span> <span class="w-correct">might</span> <span class="w-err">have<span class="w-read">→has</span></span> <span class="w-correct">become</span> <span class="w-correct">sick</span> <span class="w-correct">over</span> <span class="w-correct">time.</span> <span class="w-correct">Other</span> <span class="w-correct">people</span> <span class="w-correct">worry</span> <span class="w-correct">that</span> <span class="w-err">it<span class="w-read">→it's</span></span> <span class="w-del">is</span> <span class="w-correct">because</span> <span class="w-err">Earth<span class="w-read">→it's</span></span> <span class="w-del">is</span> <span class="w-correct">getting</span> <span class="w-err">warmer.<span class="w-read">→worse</span></span> <span class="w-err">Still<span class="w-read">→until</span></span> <span class="w-correct">others</span> <span class="w-err">think<span class="w-read">→say</span></span> <span class="w-err">it<span class="w-read">→it's</span></span> <span class="w-del">is</span> <span class="w-correct">just</span> <span class="w-correct">because</span> <span class="w-del">the</span> <span class="w-correct">trees</span> <span class="w-correct">were</span> <span class="w-correct">old.</span></div>
+    <div class="ap" style="border-color:#667eea">
+  <span class="ap-icon">🎧</span>
+  <span class="ap-label">原音</span>
+  <audio controls preload="metadata" style="width:100%;height:36px">
+    <source src="https://lighthouse-file.abctime.com/assets/audio/mpeg/1758017431803331_p11.mp3" type="audio/wav">
+    <source src="https://lighthouse-file.abctime.com/assets/audio/mpeg/1758017431803331_p11.mp3" type="audio/mpeg">
+  </audio>
+</div><div class="ap" style="border-color:#f093fb">
+  <span class="ap-icon">🎙️</span>
+  <span class="ap-label">跟读</span>
+  <audio controls preload="metadata" style="width:100%;height:36px">
+    <source src="https://oaudios.abctime.com/abcreading/2026/06/24/13077288/books/oss_audio_1782344063999.wav" type="audio/wav">
+    <source src="https://oaudios.abctime.com/abcreading/2026/06/24/13077288/books/oss_audio_1782344063999.wav" type="audio/mpeg">
+  </audio>
+</div>
+  </div>
+</div>
+<div class="page">
+  <div class="page-hd">
+    <div class="page-num">12</div>
+    <div class="page-info">
+      <div class="page-acc" style="color:#f59e0b">69.7%</div>
+      <span class="badge sub">替换 10</span> <span class="badge ins">多读 8</span> <span class="badge" style="background:#6366f1">🎵 声学61%</span> <span class="badge" style="background:#10b981">💨 流利49%</span> 
+    </div>
+  </div>
+  <div class="page-body">
+    <div class="page-text"><span class="w-err">Without<span class="w-read">→we</span></span> <span class="w-err">baobabs,<span class="w-read">→start</span></span> <span class="w-correct">life</span> <span class="w-correct">in</span> <span class="w-err">Africa<span class="w-read">→african</span></span> <span class="w-err">would<span class="w-read">→who</span></span> <span class="w-correct">not</span> <span class="w-correct">be</span> <span class="w-correct">the</span> <span class="w-correct">same.</span> <span class="w-correct">These</span> <span class="w-correct">giants</span> <span class="w-correct">of</span> <span class="w-correct">the</span> <span class="w-err">savanna<span class="w-read">→savannah</span></span> <span class="w-correct">have</span> <span class="w-err">so<span class="w-read">→too</span></span> <span class="w-correct">much</span> <span class="w-correct">to</span> <span class="w-correct">offer.</span> <span class="w-err">Hopefully,<span class="w-read">→hope</span></span> <span class="w-correct">people</span> <span class="w-correct">can</span> <span class="w-correct">look</span> <span class="w-correct">forward</span> <span class="w-correct">to</span> <span class="w-correct">their</span> <span class="w-err">plentiful<span class="w-read">→beautiful</span></span> <span class="w-err">gifts<span class="w-read">→gift</span></span> <span class="w-correct">for</span> <span class="w-correct">years</span> <span class="w-correct">to</span> <span class="w-err">come.<span class="w-read">→become</span></span></div>
+    <div class="ap" style="border-color:#667eea">
+  <span class="ap-icon">🎧</span>
+  <span class="ap-label">原音</span>
+  <audio controls preload="metadata" style="width:100%;height:36px">
+    <source src="https://lighthouse-file.abctime.com/assets/audio/mpeg/1758017432103716_p12.mp3" type="audio/wav">
+    <source src="https://lighthouse-file.abctime.com/assets/audio/mpeg/1758017432103716_p12.mp3" type="audio/mpeg">
+  </audio>
+</div><div class="ap" style="border-color:#f093fb">
+  <span class="ap-icon">🎙️</span>
+  <span class="ap-label">跟读</span>
+  <audio controls preload="metadata" style="width:100%;height:36px">
+    <source src="https://oaudios.abctime.com/abcreading/2026/06/24/13077288/books/oss_audio_1782344116899.wav" type="audio/wav">
+    <source src="https://oaudios.abctime.com/abcreading/2026/06/24/13077288/books/oss_audio_1782344116899.wav" type="audio/mpeg">
+  </audio>
+</div>
+  </div>
+</div>
+<div class="card"><h3>🏋️ 专项训练</h3><div class="train-block">
+  <div class="train-title">🔊 尾音训练: -ed</div>
+  <div class="train-desc">你有 3 次漏读或读错 -ed 结尾。试试下面这些词：</div>
+            <div class="train-words"><span class="tw">picked</span><span class="tw">used</span><span class="tw">barrel-shaped</span></div>
+            <div class="train-sentence">📝 请慢读以下单词，注意-ed尾音不要漏掉：picked · used · barrel-shaped</div>
+</div><div class="train-block">
+  <div class="train-title">🔊 尾音训练: -ing</div>
+  <div class="train-desc">你有 3 次漏读或读错 -ing 结尾。试试下面这些词：</div>
+            <div class="train-words"><span class="tw">dying</span><span class="tw">forming</span></div>
+            <div class="train-sentence">📝 请慢读以下单词，注意-ing尾音不要漏掉：dying · forming</div>
+</div><div class="train-block">
+  <div class="train-title">🔊 尾音训练: -s/es</div>
+  <div class="train-desc">你有 38 次漏读或读错 -s/es 结尾。试试下面这些词：</div>
+            <div class="train-words"><span class="tw">plains</span><span class="tw">trees</span><span class="tw">meters</span><span class="tw">giants</span><span class="tw">lands</span><span class="tw">thousands</span><span class="tw">baobabs</span></div>
+            <div class="train-sentence">📝 请慢读以下单词，注意-s/es尾音不要漏掉：plains · trees · meters · giants · lands · thousands · baobabs</div>
+</div><div class="train-block">
+  <div class="train-title">📖 高频词专项训练</div>
+  <div class="train-desc">你有 23 次读错高频功能词（冠词/介词/代词）。这些词虽小但很重要！</div>
+            <div class="train-words"><span class="tw fw">the</span><span class="tw fw">of</span><span class="tw fw">that</span><span class="tw fw">a</span><span class="tw fw">their</span></div><div class="train-sentences"><div class="ts">🔊 The cat sat on the mat. The dog ran to the park.</div><div class="ts">🔊 The color of the sky. A cup of tea.</div><div class="ts">🔊 A bird flew over a tree. I saw a car and a bus.</div></div>
+</div><div class="train-block">
+  <div class="train-title">🎯 疑难词汇集中训练</div>
+  <div class="train-desc">以下是你多次读错的「顽固词」——建议反复跟读标准录音：</div>
+            <div class="train-grid"><div class="tw-card"><strong>baobab</strong><span class="tw-err">读成: above, grown</span><span class="tw-n">×10</span></div><div class="tw-card"><strong>baobabs</strong><span class="tw-err">读成: bob, for</span><span class="tw-n">×4</span></div><div class="tw-card"><strong>the</strong><span class="tw-err">读成: lyswena, lissaman</span><span class="tw-n">×4</span></div><div class="tw-card"><strong>tree's</strong><span class="tw-err">读成: tree, trees</span><span class="tw-n">×4</span></div><div class="tw-card"><strong>fruit</strong><span class="tw-err">读成: fruits, fruits</span><span class="tw-n">×4</span></div><div class="tw-card"><strong>plains</strong><span class="tw-err">读成: plants, plants</span><span class="tw-n">×3</span></div><div class="tw-card"><strong>branches</strong><span class="tw-err">读成: are, the</span><span class="tw-n">×3</span></div><div class="tw-card"><strong>it</strong><span class="tw-err">读成: it's, it's</span><span class="tw-n">×3</span></div><div class="tw-card"><strong>trunk</strong><span class="tw-err">读成: hold, hole</span><span class="tw-n">×3</span></div><div class="tw-card"><strong>stems</strong><span class="tw-err">读成: servingy, stains</span><span class="tw-n">×3</span></div></div>
+</div><div class="train-block">
+  <div class="train-title">⏭️ 漏读提醒</div>
+  <div class="train-desc">以下是容易漏读的词——朗读时请放慢速度，确保每个词都读到：</div>
+            <div class="train-words"><span class="tw da">is</span><span class="tw da">savanna</span><span class="tw da">years</span><span class="tw da">like</span><span class="tw da">barrels</span></div>
+            <div class="train-tip">💡 建议：朗读时手指指读，每读完一个词才移到下一个。</div>
+</div></div>
+<div class="card disclaimer">
+  <h4>⚠️ 评分说明</h4>
+  <p>⚠️ 发音准确率、尾音保留率、重音正确率为基于文本难度的预估分，仅供参考。真实发音质量需通过人工聆听或语音识别(ASR)确认。建议家长对照原声逐句检查，重点关注'发音难点词'和'尾音重点词'。</p>
+</div>
+<div class="footer">ABC Reading Evaluator v3.0 · 2026-06-26 05:48</div>
+</div>
+</body>
+</html>

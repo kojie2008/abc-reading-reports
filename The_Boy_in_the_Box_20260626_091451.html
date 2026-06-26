@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>朗读评测报告 - 小雨</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,'PingFang SC','Microsoft YaHei',sans-serif;background:#f0f2f5;color:#333;padding:0;max-width:420px;margin:0 auto;min-height:100vh}
+.banner{background:linear-gradient(135deg,#667eea 0%,#f093fb 50%,#f5576c 100%);padding:28px 20px 24px;position:relative;overflow:hidden}
+.banner-stars{position:absolute;top:12px;right:16px;font-size:20px;opacity:.4}
+.banner-label{font-size:11px;color:rgba(255,255,255,.6);letter-spacing:3px;margin-bottom:2px}
+.banner-name{font-size:26px;color:#fff;font-weight:700;line-height:1.2}
+.banner-sub{font-size:13px;color:rgba(255,255,255,.8);margin-top:2px}
+.banner-flex{display:flex;align-items:center;gap:16px;margin-top:14px}
+.banner-side{color:#fff}
+.banner-big{font-size:32px;font-weight:700;line-height:1}
+.banner-sm{font-size:11px;opacity:.7;margin-top:2px}
+.banner-ts{margin-top:10px;font-size:11px;color:rgba(255,255,255,.5)}
+.content{padding:10px 12px}
+.card{background:#fff;border-radius:14px;padding:14px;margin-bottom:10px;box-shadow:0 1px 6px rgba(0,0,0,.06)}
+.card h3{font-size:14px;color:#555;margin-bottom:10px;display:flex;align-items:center;gap:6px}
+.card h4{font-size:13px;color:#666;margin-bottom:6px}
+.s-grid{display:flex;flex-direction:column;gap:8px}
+.s-row{display:flex;flex-direction:column;gap:2px;padding:6px 0;border-bottom:1px solid #f5f5f5}
+.s-row:last-child{border-bottom:none}
+.s-head{display:flex;align-items:center;gap:6px}
+.s-icon{width:22px;text-align:center;font-size:13px}
+.s-label{font-size:12px;color:#666;font-weight:600}
+.s-body{display:flex;flex-direction:column;gap:1px}
+.s-barline{display:flex;align-items:center;gap:6px}
+.s-val{font-size:13px;font-weight:600;white-space:nowrap;width:52px;text-align:right;flex-shrink:0}
+.s-comment{font-size:11px;line-height:1.4;padding-left:28px}
+.tip-row{display:flex;align-items:flex-start;gap:8px;padding:6px 0;border-bottom:1px solid #f5f5f5}
+.tip-row:last-child{border-bottom:none}
+.tip-badge{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:50%;background:#f0f2f5;font-size:11px;font-weight:700;flex-shrink:0}
+.tip-1{background:#fee2e2;color:#ef4444}
+.tip-2{background:#fef3c7;color:#f59e0b}
+.tip-3{background:#dbeafe;color:#3b82f6}
+.tip-text{font-size:12px;line-height:1.5;color:#555}
+.tip-text strong{color:#333}
+.result-pass,.result-fail{text-align:center;padding:16px}
+.result-pass{background:linear-gradient(135deg,#22c55e,#16a34a);color:#fff}
+.result-fail{background:linear-gradient(135deg,#f59e0b,#d97706);color:#fff}
+.result-score{font-size:40px;font-weight:700}
+.result-label{font-size:14px;margin-top:4px}
+.result-detail{font-size:11px;opacity:.7;margin-top:4px}
+.err-grid{display:flex;flex-direction:column;gap:8px}
+.err-cat{}
+.err-cat-head{display:flex;align-items:center;gap:6px;font-size:13px;margin-bottom:4px}
+.err-cat-label{font-weight:600;flex:1;font-size:12px;color:#444}
+.err-cat-count{font-size:11px;color:#999;background:#f5f5f5;padding:1px 8px;border-radius:8px}
+.err-cat-tags{display:flex;flex-wrap:wrap;gap:4px}
+.wtag{display:inline-block;padding:2px 8px;border-radius:10px;font-size:11px;border:1px solid}
+.page{background:#fff;border-radius:12px;margin-bottom:8px;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,.04)}
+.page-hd{display:flex;align-items:center;padding:10px 12px;gap:8px;border-bottom:1px solid #f0f0f0}
+.page-num{width:32px;height:32px;border-radius:50%;background:#eff6ff;color:#3b82f6;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0}
+.page-info{flex:1;display:flex;flex-wrap:wrap;align-items:center;gap:4px}
+.page-acc{font-size:13px;font-weight:600;margin-right:4px}
+.badge{display:inline-block;padding:1px 6px;border-radius:8px;font-size:10px;font-weight:600;color:#fff}
+.badge.sub{background:#f59e0b}
+.badge.del{background:#ef4444}
+.badge.ins{background:#8b5cf6}
+.page-body{padding:10px 12px}
+.page-text{font-size:13px;line-height:1.7;margin-bottom:8px;word-break:break-word}
+.w-correct{color:#333}
+.w-err{color:#f59e0b;font-weight:600}
+.w-read{color:#bbb;font-weight:400;font-size:11px;text-decoration:line-through;margin-left:2px}
+.w-del{color:#ef4444;text-decoration:line-through}
+.ap{border:1.5px solid;border-radius:10px;padding:6px 10px;margin-bottom:6px;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.ap-icon{font-size:14px}
+.ap-label{font-size:11px;color:#666;flex-shrink:0}
+.ap audio{flex:1;min-width:120px;height:32px;border-radius:6px}
+.train-block{margin-top:10px;padding-top:10px;border-top:1px solid #f0f0f0}
+.train-block:first-child{margin-top:0;padding-top:0;border-top:none}
+.train-title{font-size:13px;font-weight:600;color:#444;margin-bottom:6px}
+.train-desc{font-size:12px;color:#888;margin-bottom:6px}
+.train-words{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px}
+.tw{display:inline-block;padding:4px 10px;border-radius:14px;font-size:12px;background:#fef3c7;border:1px solid #f59e0b;color:#92400e}
+.tw.fw{background:#dbeafe;border-color:#3b82f6;color:#1e40af}
+.tw.da{background:#fee2e2;border-color:#ef4444;color:#991b1b}
+.train-sentence{font-size:12px;color:#666;background:#f9fafb;padding:8px;border-radius:8px;margin-top:4px;line-height:1.6}
+.train-sentences{margin-top:4px}
+.ts{font-size:12px;color:#666;padding:4px 0;line-height:1.5}
+.train-grid{display:flex;flex-direction:column;gap:6px}
+.tw-card{display:flex;align-items:center;gap:6px;padding:6px 10px;background:#fef3c7;border-radius:10px;font-size:12px}
+.tw-card strong{color:#92400e}
+.tw-err{color:#bbb;font-size:11px;text-decoration:line-through;flex:1}
+.tw-n{color:#f59e0b;font-weight:700;font-size:11px}
+.tp-card{display:flex;align-items:center;gap:6px;padding:6px 10px;background:#f0fdf4;border-radius:10px;font-size:12px}
+.tp-correct{color:#22c55e;font-weight:600}
+.tp-wrong{color:#ef4444;font-weight:600}
+.tp-drill{color:#888;font-size:11px;flex:1}
+.train-tip{font-size:12px;color:#3b82f6;background:#eff6ff;padding:8px;border-radius:8px;margin-top:4px}
+.disclaimer{background:#fefce8;border:1px solid #fde68a}
+.disclaimer p{font-size:11px;color:#92400e;line-height:1.6}
+.footer{text-align:center;color:#bbb;font-size:10px;padding:16px 0}
+</style>
+  <meta property="og:title" content="⭐ 英语朗读评测报告" />
+  <meta property="og:description" content="学生音朗读打卡，AI自动评测发音/尾音/流利度/完整性" />
+  <meta property="og:type" content="website" />
+  <meta property="og:image" content="https://raw.githubusercontent.com/kojie2008/abc-reading-reports/main/og-card.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+</head>
+<body>
+<div class="banner">
+  <div class="banner-stars">⭐ 🌟 ✨</div>
+  <div class="banner-label">✦ 朗 读 评 测 报 告 ✦</div>
+  <h1 class="banner-name">小雨</h1>
+  <div class="banner-sub">《The Boy in the Box》 · Level M · 第 943 个作品</div>
+  <div class="banner-flex">
+    <svg width="110" height="110" viewBox="0 0 110 110">
+  <circle cx="55.0" cy="55.0" r="51.5" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="7"/>
+  <circle cx="55.0" cy="55.0" r="51.5" fill="none" stroke="#fff" stroke-width="7"
+    stroke-linecap="round" stroke-dasharray="323.58377" stroke-dashoffset="52.905946394999994"
+    transform="rotate(-90, 55.0, 55.0)"/>
+  <text x="55.0" y="53.0" text-anchor="middle" fill="#fff" font-size="24.2" font-weight="bold">84%</text>
+  <text x="55.0" y="71.0" text-anchor="middle" fill="rgba(255,255,255,0.7)" font-size="11.0">准确率</text>
+</svg>
+    <div class="banner-side">
+      <div class="banner-big">104</div>
+      <div class="banner-sm">原文总词数</div>
+      <div class="banner-big" style="font-size:18px;margin-top:8px">100 分</div>
+      <div class="banner-sm">ABC Reading 评分</div>
+    </div>
+  </div>
+  <div class="banner-ts">2026-06-26 09:14</div>
+</div>
+<div class="content">
+<div class="card"><h3>📊 五维评分</h3>
+  <div class="s-grid"><div class="s-row">
+  <div class="s-head">
+    <span class="s-icon">🎯</span>
+    <span class="s-label">发音准确率</span>
+  </div>
+  <div class="s-body">
+    <div class="s-barline">
+      <span class="s-val" style="color:#f59e0b">23.6/30</span>
+      <svg width="70" height="6" style="vertical-align:middle;border-radius:3.0px">
+  <rect width="70" height="6" rx="3.0" fill="#e5e7eb"/>
+  <rect width="55" height="6" rx="3.0" fill="#f59e0b"/>
+</svg>
+    </div>
+    <div class="s-comment" style="color:#f59e0b">大部分发音正确，个别单词需要再听一下原音</div>
+  </div>
+</div><div class="s-row">
+  <div class="s-head">
+    <span class="s-icon">🔊</span>
+    <span class="s-label">尾音保留</span>
+  </div>
+  <div class="s-body">
+    <div class="s-barline">
+      <span class="s-val" style="color:#f59e0b">10.3/20</span>
+      <svg width="70" height="6" style="vertical-align:middle;border-radius:3.0px">
+  <rect width="70" height="6" rx="3.0" fill="#e5e7eb"/>
+  <rect width="36" height="6" rx="3.0" fill="#f59e0b"/>
+</svg>
+    </div>
+    <div class="s-comment" style="color:#f59e0b">部分尾音有遗漏，注意句子末尾单词的尾部发音</div>
+  </div>
+</div><div class="s-row">
+  <div class="s-head">
+    <span class="s-icon">⏸️</span>
+    <span class="s-label">流畅性</span>
+  </div>
+  <div class="s-body">
+    <div class="s-barline">
+      <span class="s-val" style="color:#ef4444">9.5/20</span>
+      <svg width="70" height="6" style="vertical-align:middle;border-radius:3.0px">
+  <rect width="70" height="6" rx="3.0" fill="#e5e7eb"/>
+  <rect width="33" height="6" rx="3.0" fill="#ef4444"/>
+</svg>
+    </div>
+    <div class="s-comment" style="color:#ef4444">需要在标点处多练习停顿，读的时候可以试着用手指点读</div>
+  </div>
+</div><div class="s-row">
+  <div class="s-head">
+    <span class="s-icon">🔉</span>
+    <span class="s-label">音量清晰</span>
+  </div>
+  <div class="s-body">
+    <div class="s-barline">
+      <span class="s-val" style="color:#22c55e">14.4/15</span>
+      <svg width="70" height="6" style="vertical-align:middle;border-radius:3.0px">
+  <rect width="70" height="6" rx="3.0" fill="#e5e7eb"/>
+  <rect width="67" height="6" rx="3.0" fill="#22c55e"/>
+</svg>
+    </div>
+    <div class="s-comment" style="color:#22c55e">声音洪亮清晰，每个单词都读得很清楚</div>
+  </div>
+</div><div class="s-row">
+  <div class="s-head">
+    <span class="s-icon">📋</span>
+    <span class="s-label">完整性</span>
+  </div>
+  <div class="s-body">
+    <div class="s-barline">
+      <span class="s-val" style="color:#22c55e">8.6/10</span>
+      <svg width="70" height="6" style="vertical-align:middle;border-radius:3.0px">
+  <rect width="70" height="6" rx="3.0" fill="#e5e7eb"/>
+  <rect width="60" height="6" rx="3.0" fill="#22c55e"/>
+</svg>
+    </div>
+    <div class="s-comment" style="color:#22c55e">朗读完整，没有漏页漏行的情况</div>
+  </div>
+</div></div>
+</div>
+<div class="card result-pass">
+  <div class="result-score">66<span style="font-size:14px;color:rgba(255,255,255,0.7)">/100</span></div>
+  <div class="result-label">表现不错！继续坚持 🎉</div>
+  <div class="result-detail">五维综合评分，再接再厉 💪</div>
+</div>
+<div class="card"><h3>📈 综合提升建议</h3>
+  <div class='tip-row'><span class='tip-badge tip-1'>①</span><span class='tip-text'><strong>停顿</strong>：朗读时注意句号和逗号，读到标点处稍作停顿换气</span></div><div class='tip-row'><span class='tip-badge tip-2'>②</span><span class='tip-text'><strong>尾音</strong>：着重练习 -ed/-s/-ing 词尾的发音，放慢语速把尾音读清楚</span></div>
+</div>
+<div class="card"><h3>🔍 错误分类统计</h3>
+  <div class="err-grid"><div class="err-cat">
+  <div class="err-cat-head">
+    <span>📖</span>
+    <span class="err-cat-label">功能词 (冠词/介词)</span>
+    <span class="err-cat-count">2次</span>
+  </div>
+  <div class="err-cat-tags"><span class="wtag" style="border-color:#3b82f630;background:#3b82f610;color:#3b82f6">he</span></div>
+</div><div class="err-cat">
+  <div class="err-cat-head">
+    <span>🔊</span>
+    <span class="err-cat-label">尾音 -ed</span>
+    <span class="err-cat-count">2次</span>
+  </div>
+  <div class="err-cat-tags"><span class="wtag" style="border-color:#f59e0b30;background:#f59e0b10;color:#f59e0b">denied</span> <span class="wtag" style="border-color:#f59e0b30;background:#f59e0b10;color:#f59e0b">donned</span></div>
+</div><div class="err-cat">
+  <div class="err-cat-head">
+    <span>❓</span>
+    <span class="err-cat-label">其他错误</span>
+    <span class="err-cat-count">10次</span>
+  </div>
+  <div class="err-cat-tags"><span class="wtag" style="border-color:#6b728030;background:#6b728010;color:#6b7280">what</span> <span class="wtag" style="border-color:#6b728030;background:#6b728010;color:#6b7280">till</span> <span class="wtag" style="border-color:#6b728030;background:#6b728010;color:#6b7280">snug</span> <span class="wtag" style="border-color:#6b728030;background:#6b728010;color:#6b7280">weary</span> <span class="wtag" style="border-color:#6b728030;background:#6b728010;color:#6b7280">lid</span> <span class="wtag" style="border-color:#6b728030;background:#6b728010;color:#6b7280">felt</span> <span class="wtag" style="border-color:#6b728030;background:#6b728010;color:#6b7280">there</span> <span class="wtag" style="border-color:#6b728030;background:#6b728010;color:#6b7280">then</span></div>
+</div><div class="err-cat">
+  <div class="err-cat-head">
+    <span>🔤</span>
+    <span class="err-cat-label">元音替换</span>
+    <span class="err-cat-count">3次</span>
+  </div>
+  <div class="err-cat-tags"><span class="wtag" style="border-color:#ec489930;background:#ec489910;color:#ec4899">wore</span> <span class="wtag" style="border-color:#ec489930;background:#ec489910;color:#ec4899">thin</span> <span class="wtag" style="border-color:#ec489930;background:#ec489910;color:#ec4899">popped</span></div>
+</div></div>
+</div>
+<h3 style="font-size:14px;color:#555;margin:10px 12px 6px;display:flex;align-items:center;gap:6px">📄 逐页分析</h3>
+<div class="page">
+  <div class="page-hd">
+    <div class="page-num">1</div>
+    <div class="page-info">
+      <div class="page-acc" style="color:#22c55e">95.2%</div>
+      <span class="badge sub">替换 1</span> <span class="badge ins">多读 1</span> <span class="badge" style="background:#6366f1">🎵 声学75%</span> <span class="badge" style="background:#10b981">💨 流利73%</span> 
+    </div>
+  </div>
+  <div class="page-body">
+    <div class="page-text"><span class="w-err">There<span class="w-read">→they</span></span> <span class="w-correct">once</span> <span class="w-correct">was</span> <span class="w-correct">a</span> <span class="w-correct">boy</span> <span class="w-correct">who</span> <span class="w-correct">lived</span> <span class="w-correct">in</span> <span class="w-correct">a</span> <span class="w-correct">box.</span> <span class="w-correct">It</span> <span class="w-correct">was</span> <span class="w-correct">so</span> <span class="w-correct">warm</span> <span class="w-correct">and</span> <span class="w-correct">snug,</span> <span class="w-correct">that</span> <span class="w-correct">he</span> <span class="w-correct">didn't</span> <span class="w-correct">need</span> <span class="w-correct">socks.</span></div>
+    <div class="ap" style="border-color:#667eea">
+  <span class="ap-icon">🎧</span>
+  <span class="ap-label">原音</span>
+  <audio controls preload="metadata" style="width:100%;height:36px">
+    <source src="https://lighthouse-file.abctime.com/assets/audio/mpeg/1758019944515979_p1.mp3" type="audio/wav">
+    <source src="https://lighthouse-file.abctime.com/assets/audio/mpeg/1758019944515979_p1.mp3" type="audio/mpeg">
+  </audio>
+</div><div class="ap" style="border-color:#f093fb">
+  <span class="ap-icon">🎙️</span>
+  <span class="ap-label">跟读</span>
+  <audio controls preload="metadata" style="width:100%;height:36px">
+    <source src="https://oaudios.abctime.com/abcreading/2026/06/25/13077288/books/oss_audio_1782430801288.wav" type="audio/wav">
+    <source src="https://oaudios.abctime.com/abcreading/2026/06/25/13077288/books/oss_audio_1782430801288.wav" type="audio/mpeg">
+  </audio>
+</div>
+  </div>
+</div>
+<div class="page">
+  <div class="page-hd">
+    <div class="page-num">2</div>
+    <div class="page-info">
+      <div class="page-acc" style="color:#22c55e">80.0%</div>
+      <span class="badge sub">替换 3</span> <span class="badge" style="background:#6366f1">🎵 声学69%</span> <span class="badge" style="background:#10b981">💨 流利61%</span> 
+    </div>
+  </div>
+  <div class="page-body">
+    <div class="page-text"><span class="w-err">Then<span class="w-read">→man</span></span> <span class="w-correct">guess</span> <span class="w-err">what<span class="w-read">→what's</span></span> <span class="w-correct">he</span> <span class="w-correct">did?</span> <span class="w-correct">He</span> <span class="w-correct">opened</span> <span class="w-correct">the</span> <span class="w-err">lid!<span class="w-read">→lead</span></span> <span class="w-correct">He</span> <span class="w-correct">wanted</span> <span class="w-correct">to</span> <span class="w-correct">see</span> <span class="w-correct">the</span> <span class="w-correct">Outside.</span></div>
+    <div class="ap" style="border-color:#667eea">
+  <span class="ap-icon">🎧</span>
+  <span class="ap-label">原音</span>
+  <audio controls preload="metadata" style="width:100%;height:36px">
+    <source src="https://lighthouse-file.abctime.com/assets/audio/mpeg/1758019944764264_p2.mp3" type="audio/wav">
+    <source src="https://lighthouse-file.abctime.com/assets/audio/mpeg/1758019944764264_p2.mp3" type="audio/mpeg">
+  </audio>
+</div><div class="ap" style="border-color:#f093fb">
+  <span class="ap-icon">🎙️</span>
+  <span class="ap-label">跟读</span>
+  <audio controls preload="metadata" style="width:100%;height:36px">
+    <source src="https://oaudios.abctime.com/abcreading/2026/06/25/13077288/books/oss_audio_1782430852360.wav" type="audio/wav">
+    <source src="https://oaudios.abctime.com/abcreading/2026/06/25/13077288/books/oss_audio_1782430852360.wav" type="audio/mpeg">
+  </audio>
+</div>
+  </div>
+</div>
+<div class="page">
+  <div class="page-hd">
+    <div class="page-num">3</div>
+    <div class="page-info">
+      <div class="page-acc" style="color:#f59e0b">79.0%</div>
+      <span class="badge sub">替换 4</span> <span class="badge" style="background:#6366f1">🎵 声学72%</span> <span class="badge" style="background:#10b981">💨 流利59%</span> 
+    </div>
+  </div>
+  <div class="page-body">
+    <div class="page-text"><span class="w-correct">The</span> <span class="w-correct">first</span> <span class="w-correct">things</span> <span class="w-err">he<span class="w-read">→she</span></span> <span class="w-correct">found</span> <span class="w-correct">were</span> <span class="w-correct">some</span> <span class="w-correct">socks</span> <span class="w-correct">on</span> <span class="w-correct">the</span> <span class="w-correct">ground.</span> <span class="w-err">He<span class="w-read">→she</span></span> <span class="w-err">donned<span class="w-read">→done</span></span> <span class="w-correct">them</span> <span class="w-correct">and</span> <span class="w-err">wore<span class="w-read">→roll</span></span> <span class="w-correct">them</span> <span class="w-correct">with</span> <span class="w-correct">pride.</span></div>
+    <div class="ap" style="border-color:#667eea">
+  <span class="ap-icon">🎧</span>
+  <span class="ap-label">原音</span>
+  <audio controls preload="metadata" style="width:100%;height:36px">
+    <source src="https://lighthouse-file.abctime.com/assets/audio/mpeg/1758019945009222_p3.mp3" type="audio/wav">
+    <source src="https://lighthouse-file.abctime.com/assets/audio/mpeg/1758019945009222_p3.mp3" type="audio/mpeg">
+  </audio>
+</div><div class="ap" style="border-color:#f093fb">
+  <span class="ap-icon">🎙️</span>
+  <span class="ap-label">跟读</span>
+  <audio controls preload="metadata" style="width:100%;height:36px">
+    <source src="https://oaudios.abctime.com/abcreading/2026/06/25/13077288/books/oss_audio_1782430945202.wav" type="audio/wav">
+    <source src="https://oaudios.abctime.com/abcreading/2026/06/25/13077288/books/oss_audio_1782430945202.wav" type="audio/mpeg">
+  </audio>
+</div>
+  </div>
+</div>
+<div class="page">
+  <div class="page-hd">
+    <div class="page-num">4</div>
+    <div class="page-info">
+      <div class="page-acc" style="color:#ef4444">0.0%</div>
+      
+    </div>
+  </div>
+  <div class="page-body">
+    <div class="page-text"><span class="w-correct">But</span> <span class="w-correct">Outside</span> <span class="w-correct">seemed</span> <span class="w-correct">strange</span> <span class="w-correct">and</span> <span class="w-correct">out</span> <span class="w-correct">of</span> <span class="w-correct">his</span> <span class="w-correct">range—</span> <span class="w-correct">a</span> <span class="w-correct">world</span> <span class="w-correct">both</span> <span class="w-correct">unnatural</span> <span class="w-correct">and</span> <span class="w-correct">eerie.</span></div>
+    <div class="ap" style="border-color:#667eea">
+  <span class="ap-icon">🎧</span>
+  <span class="ap-label">原音</span>
+  <audio controls preload="metadata" style="width:100%;height:36px">
+    <source src="https://lighthouse-file.abctime.com/assets/audio/mpeg/1758019945260159_p4.mp3" type="audio/wav">
+    <source src="https://lighthouse-file.abctime.com/assets/audio/mpeg/1758019945260159_p4.mp3" type="audio/mpeg">
+  </audio>
+</div>
+  </div>
+</div>
+<div class="page">
+  <div class="page-hd">
+    <div class="page-num">5</div>
+    <div class="page-info">
+      <div class="page-acc" style="color:#22c55e">85.7%</div>
+      <span class="badge sub">替换 2</span> <span class="badge" style="background:#6366f1">🎵 声学71%</span> <span class="badge" style="background:#10b981">💨 流利66%</span> 
+    </div>
+  </div>
+  <div class="page-body">
+    <div class="page-text"><span class="w-correct">Outside</span> <span class="w-correct">was</span> <span class="w-correct">too</span> <span class="w-correct">loud.</span> <span class="w-correct">He</span> <span class="w-correct">no</span> <span class="w-correct">longer</span> <span class="w-err">felt<span class="w-read">→feels</span></span> <span class="w-correct">proud</span> <span class="w-correct">and</span> <span class="w-correct">grew</span> <span class="w-correct">most</span> <span class="w-correct">incredibly</span> <span class="w-err">weary.<span class="w-read">→very</span></span></div>
+    <div class="ap" style="border-color:#667eea">
+  <span class="ap-icon">🎧</span>
+  <span class="ap-label">原音</span>
+  <audio controls preload="metadata" style="width:100%;height:36px">
+    <source src="https://lighthouse-file.abctime.com/assets/audio/mpeg/1758019945526613_p5.mp3" type="audio/wav">
+    <source src="https://lighthouse-file.abctime.com/assets/audio/mpeg/1758019945526613_p5.mp3" type="audio/mpeg">
+  </audio>
+</div><div class="ap" style="border-color:#f093fb">
+  <span class="ap-icon">🎙️</span>
+  <span class="ap-label">跟读</span>
+  <audio controls preload="metadata" style="width:100%;height:36px">
+    <source src="https://oaudios.abctime.com/abcreading/2026/06/25/13077288/books/oss_audio_1782431140227.wav" type="audio/wav">
+    <source src="https://oaudios.abctime.com/abcreading/2026/06/25/13077288/books/oss_audio_1782431140227.wav" type="audio/mpeg">
+  </audio>
+</div>
+  </div>
+</div>
+<div class="page">
+  <div class="page-hd">
+    <div class="page-num">6</div>
+    <div class="page-info">
+      <div class="page-acc" style="color:#f59e0b">76.5%</div>
+      <span class="badge sub">替换 4</span> <span class="badge" style="background:#6366f1">🎵 声学71%</span> <span class="badge" style="background:#10b981">💨 流利67%</span> 
+    </div>
+  </div>
+  <div class="page-body">
+    <div class="page-text"><span class="w-correct">So</span> <span class="w-correct">the</span> <span class="w-correct">boy,</span> <span class="w-correct">wearing</span> <span class="w-err">thin,<span class="w-read">→same</span></span> <span class="w-err">popped<span class="w-read">→puffed</span></span> <span class="w-correct">the</span> <span class="w-err">lid<span class="w-read">→lead</span></span> <span class="w-correct">and</span> <span class="w-correct">crawled</span> <span class="w-correct">in,</span> <span class="w-correct">back</span> <span class="w-correct">to</span> <span class="w-correct">his</span> <span class="w-err">snug<span class="w-read">→notch</span></span> <span class="w-correct">little</span> <span class="w-correct">box.</span></div>
+    <div class="ap" style="border-color:#667eea">
+  <span class="ap-icon">🎧</span>
+  <span class="ap-label">原音</span>
+  <audio controls preload="metadata" style="width:100%;height:36px">
+    <source src="https://lighthouse-file.abctime.com/assets/audio/mpeg/1758019945827500_p6.mp3" type="audio/wav">
+    <source src="https://lighthouse-file.abctime.com/assets/audio/mpeg/1758019945827500_p6.mp3" type="audio/mpeg">
+  </audio>
+</div><div class="ap" style="border-color:#f093fb">
+  <span class="ap-icon">🎙️</span>
+  <span class="ap-label">跟读</span>
+  <audio controls preload="metadata" style="width:100%;height:36px">
+    <source src="https://oaudios.abctime.com/abcreading/2026/06/25/13077288/books/oss_audio_1782431228604.wav" type="audio/wav">
+    <source src="https://oaudios.abctime.com/abcreading/2026/06/25/13077288/books/oss_audio_1782431228604.wav" type="audio/mpeg">
+  </audio>
+</div>
+  </div>
+</div>
+<div class="page">
+  <div class="page-hd">
+    <div class="page-num">7</div>
+    <div class="page-info">
+      <div class="page-acc" style="color:#22c55e">83.3%</div>
+      <span class="badge sub">替换 3</span> <span class="badge ins">多读 1</span> <span class="badge" style="background:#6366f1">🎵 声学70%</span> <span class="badge" style="background:#10b981">💨 流利55%</span> 
+    </div>
+  </div>
+  <div class="page-body">
+    <div class="page-text"><span class="w-correct">And</span> <span class="w-correct">closing</span> <span class="w-correct">the</span> <span class="w-err">lid,<span class="w-read">→leaves</span></span> <span class="w-correct">he</span> <span class="w-err">denied<span class="w-read">→then</span></span> <span class="w-correct">what</span> <span class="w-correct">he</span> <span class="w-correct">did</span> <span class="w-err">till<span class="w-read">→until</span></span> <span class="w-correct">he</span> <span class="w-correct">looked</span> <span class="w-correct">at</span> <span class="w-correct">his</span> <span class="w-correct">feet</span> <span class="w-correct">and</span> <span class="w-correct">saw</span> <span class="w-correct">socks</span> <span class="w-correct">...</span></div>
+    <div class="ap" style="border-color:#667eea">
+  <span class="ap-icon">🎧</span>
+  <span class="ap-label">原音</span>
+  <audio controls preload="metadata" style="width:100%;height:36px">
+    <source src="https://lighthouse-file.abctime.com/assets/audio/mpeg/1758019946126142_p7.mp3" type="audio/wav">
+    <source src="https://lighthouse-file.abctime.com/assets/audio/mpeg/1758019946126142_p7.mp3" type="audio/mpeg">
+  </audio>
+</div><div class="ap" style="border-color:#f093fb">
+  <span class="ap-icon">🎙️</span>
+  <span class="ap-label">跟读</span>
+  <audio controls preload="metadata" style="width:100%;height:36px">
+    <source src="https://oaudios.abctime.com/abcreading/2026/06/25/13077288/books/oss_audio_1782431346446.wav" type="audio/wav">
+    <source src="https://oaudios.abctime.com/abcreading/2026/06/25/13077288/books/oss_audio_1782431346446.wav" type="audio/mpeg">
+  </audio>
+</div>
+  </div>
+</div>
+<div class="card"><h3>🏋️ 专项训练</h3><div class="train-block">
+  <div class="train-title">🔊 尾音训练: -ed</div>
+  <div class="train-desc">你有 2 次漏读或读错 -ed 结尾。试试下面这些词：</div>
+            <div class="train-words"><span class="tw">denied</span><span class="tw">donned</span></div>
+            <div class="train-sentence">📝 请慢读以下单词，注意-ed尾音不要漏掉：denied · donned</div>
+</div><div class="train-block">
+  <div class="train-title">📖 高频词专项训练</div>
+  <div class="train-desc">你有 2 次读错高频功能词（冠词/介词/代词）。这些词虽小但很重要！</div>
+            <div class="train-words"><span class="tw fw">he</span></div>
+</div></div>
+<div class="card disclaimer">
+  <h4>⚠️ 评分说明</h4>
+  <p>⚠️ 本评分为AI基于语音识别和声学对比的自动估算，仅供参考。建议家长对照原声逐句检查，重点关注错误较多的单词和尾音。</p>
+</div>
+<div class="footer">ABC Reading Evaluator v3.0 · 2026-06-26 09:14</div>
+</div>
+</body>
+</html>

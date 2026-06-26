@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>朗读评测报告 - thinking</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,'PingFang SC','Microsoft YaHei',sans-serif;background:#f0f2f5;color:#333;padding:0;max-width:420px;margin:0 auto;min-height:100vh}
+.banner{background:linear-gradient(135deg,#667eea 0%,#f093fb 50%,#f5576c 100%);padding:28px 20px 24px;position:relative;overflow:hidden}
+.banner-stars{position:absolute;top:12px;right:16px;font-size:20px;opacity:.4}
+.banner-label{font-size:11px;color:rgba(255,255,255,.6);letter-spacing:3px;margin-bottom:2px}
+.banner-name{font-size:26px;color:#fff;font-weight:700;line-height:1.2}
+.banner-sub{font-size:13px;color:rgba(255,255,255,.8);margin-top:2px}
+.banner-flex{display:flex;align-items:center;gap:16px;margin-top:14px}
+.banner-side{color:#fff}
+.banner-big{font-size:32px;font-weight:700;line-height:1}
+.banner-sm{font-size:11px;opacity:.7;margin-top:2px}
+.banner-ts{margin-top:10px;font-size:11px;color:rgba(255,255,255,.5)}
+.content{padding:10px 12px}
+.card{background:#fff;border-radius:14px;padding:14px;margin-bottom:10px;box-shadow:0 1px 6px rgba(0,0,0,.06)}
+.card h3{font-size:14px;color:#555;margin-bottom:10px;display:flex;align-items:center;gap:6px}
+.card h4{font-size:13px;color:#666;margin-bottom:6px}
+.s-grid{display:flex;flex-direction:column;gap:8px}
+.s-row{display:flex;flex-direction:column;gap:2px;padding:6px 0;border-bottom:1px solid #f5f5f5}
+.s-row:last-child{border-bottom:none}
+.s-head{display:flex;align-items:center;gap:6px}
+.s-icon{width:22px;text-align:center;font-size:13px}
+.s-label{font-size:12px;color:#666;font-weight:600}
+.s-body{display:flex;flex-direction:column;gap:1px}
+.s-barline{display:flex;align-items:center;gap:6px}
+.s-val{font-size:13px;font-weight:600;white-space:nowrap;width:52px;text-align:right;flex-shrink:0}
+.s-comment{font-size:11px;line-height:1.4;padding-left:28px}
+.tip-row{display:flex;align-items:flex-start;gap:8px;padding:6px 0;border-bottom:1px solid #f5f5f5}
+.tip-row:last-child{border-bottom:none}
+.tip-badge{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:50%;background:#f0f2f5;font-size:11px;font-weight:700;flex-shrink:0}
+.tip-1{background:#fee2e2;color:#ef4444}
+.tip-2{background:#fef3c7;color:#f59e0b}
+.tip-3{background:#dbeafe;color:#3b82f6}
+.tip-text{font-size:12px;line-height:1.5;color:#555}
+.tip-text strong{color:#333}
+.result-pass,.result-fail{text-align:center;padding:16px}
+.result-pass{background:linear-gradient(135deg,#22c55e,#16a34a);color:#fff}
+.result-fail{background:linear-gradient(135deg,#f59e0b,#d97706);color:#fff}
+.result-score{font-size:40px;font-weight:700}
+.result-label{font-size:14px;margin-top:4px}
+.result-detail{font-size:11px;opacity:.7;margin-top:4px}
+.err-grid{display:flex;flex-direction:column;gap:8px}
+.err-cat{}
+.err-cat-head{display:flex;align-items:center;gap:6px;font-size:13px;margin-bottom:4px}
+.err-cat-label{font-weight:600;flex:1;font-size:12px;color:#444}
+.err-cat-count{font-size:11px;color:#999;background:#f5f5f5;padding:1px 8px;border-radius:8px}
+.err-cat-tags{display:flex;flex-wrap:wrap;gap:4px}
+.wtag{display:inline-block;padding:2px 8px;border-radius:10px;font-size:11px;border:1px solid}
+.page{background:#fff;border-radius:12px;margin-bottom:8px;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,.04)}
+.page-hd{display:flex;align-items:center;padding:10px 12px;gap:8px;border-bottom:1px solid #f0f0f0}
+.page-num{width:32px;height:32px;border-radius:50%;background:#eff6ff;color:#3b82f6;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0}
+.page-info{flex:1;display:flex;flex-wrap:wrap;align-items:center;gap:4px}
+.page-acc{font-size:13px;font-weight:600;margin-right:4px}
+.badge{display:inline-block;padding:1px 6px;border-radius:8px;font-size:10px;font-weight:600;color:#fff}
+.badge.sub{background:#f59e0b}
+.badge.del{background:#ef4444}
+.badge.ins{background:#8b5cf6}
+.page-body{padding:10px 12px}
+.page-text{font-size:13px;line-height:1.7;margin-bottom:8px;word-break:break-word}
+.w-correct{color:#333}
+.w-err{color:#f59e0b;font-weight:600}
+.w-read{color:#bbb;font-weight:400;font-size:11px;text-decoration:line-through;margin-left:2px}
+.w-del{color:#ef4444;text-decoration:line-through}
+.ap{border:1.5px solid;border-radius:10px;padding:6px 10px;margin-bottom:6px;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.ap-icon{font-size:14px}
+.ap-label{font-size:11px;color:#666;flex-shrink:0}
+.ap audio{flex:1;min-width:120px;height:32px;border-radius:6px}
+.train-block{margin-top:10px;padding-top:10px;border-top:1px solid #f0f0f0}
+.train-block:first-child{margin-top:0;padding-top:0;border-top:none}
+.train-title{font-size:13px;font-weight:600;color:#444;margin-bottom:6px}
+.train-desc{font-size:12px;color:#888;margin-bottom:6px}
+.train-words{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px}
+.tw{display:inline-block;padding:4px 10px;border-radius:14px;font-size:12px;background:#fef3c7;border:1px solid #f59e0b;color:#92400e}
+.tw.fw{background:#dbeafe;border-color:#3b82f6;color:#1e40af}
+.tw.da{background:#fee2e2;border-color:#ef4444;color:#991b1b}
+.train-sentence{font-size:12px;color:#666;background:#f9fafb;padding:8px;border-radius:8px;margin-top:4px;line-height:1.6}
+.train-sentences{margin-top:4px}
+.ts{font-size:12px;color:#666;padding:4px 0;line-height:1.5}
+.train-grid{display:flex;flex-direction:column;gap:6px}
+.tw-card{display:flex;align-items:center;gap:6px;padding:6px 10px;background:#fef3c7;border-radius:10px;font-size:12px}
+.tw-card strong{color:#92400e}
+.tw-err{color:#bbb;font-size:11px;text-decoration:line-through;flex:1}
+.tw-n{color:#f59e0b;font-weight:700;font-size:11px}
+.tp-card{display:flex;align-items:center;gap:6px;padding:6px 10px;background:#f0fdf4;border-radius:10px;font-size:12px}
+.tp-correct{color:#22c55e;font-weight:600}
+.tp-wrong{color:#ef4444;font-weight:600}
+.tp-drill{color:#888;font-size:11px;flex:1}
+.train-tip{font-size:12px;color:#3b82f6;background:#eff6ff;padding:8px;border-radius:8px;margin-top:4px}
+.disclaimer{background:#fefce8;border:1px solid #fde68a}
+.disclaimer p{font-size:11px;color:#92400e;line-height:1.6}
+.footer{text-align:center;color:#bbb;font-size:10px;padding:16px 0}
+</style>
+</head>
+<body>
+<div class="banner">
+  <div class="banner-stars">⭐ 🌟 ✨</div>
+  <div class="banner-label">✦ 朗 读 评 测 报 告 ✦</div>
+  <h1 class="banner-name">thinking</h1>
+  <div class="banner-sub">《Voyagers in Space》 · Level M · 第 837 个作品</div>
+  <div class="banner-flex">
+    <svg width="110" height="110" viewBox="0 0 110 110">
+  <circle cx="55.0" cy="55.0" r="51.5" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="7"/>
+  <circle cx="55.0" cy="55.0" r="51.5" fill="none" stroke="#fff" stroke-width="7"
+    stroke-linecap="round" stroke-dasharray="323.58377" stroke-dashoffset="109.986123423"
+    transform="rotate(-90, 55.0, 55.0)"/>
+  <text x="55.0" y="53.0" text-anchor="middle" fill="#fff" font-size="24.2" font-weight="bold">66%</text>
+  <text x="55.0" y="71.0" text-anchor="middle" fill="rgba(255,255,255,0.7)" font-size="11.0">准确率</text>
+</svg>
+    <div class="banner-side">
+      <div class="banner-big">506</div>
+      <div class="banner-sm">原文总词数</div>
+      <div class="banner-big" style="font-size:18px;margin-top:8px">91 分</div>
+      <div class="banner-sm">ABC Reading 评分</div>
+    </div>
+  </div>
+  <div class="banner-ts">2026-06-26 08:32</div>
+</div>
+<div class="content">
+<div class="card"><h3>📊 六维评分</h3>
+  <div class="s-grid"><div class="s-row">
+  <div class="s-head">
+    <span class="s-icon">🎯</span>
+    <span class="s-label">发音准确率</span>
+  </div>
+  <div class="s-body">
+    <div class="s-barline">
+      <span class="s-val" style="color:#f59e0b">19.5/30</span>
+      <svg width="70" height="6" style="vertical-align:middle;border-radius:3.0px">
+  <rect width="70" height="6" rx="3.0" fill="#e5e7eb"/>
+  <rect width="45" height="6" rx="3.0" fill="#f59e0b"/>
+</svg>
+    </div>
+    <div class="s-comment" style="color:#f59e0b">大部分发音正确，个别单词需要再听一下原音</div>
+  </div>
+</div><div class="s-row">
+  <div class="s-head">
+    <span class="s-icon">🔊</span>
+    <span class="s-label">尾音保留</span>
+  </div>
+  <div class="s-body">
+    <div class="s-barline">
+      <span class="s-val" style="color:#ef4444">4.6/20</span>
+      <svg width="70" height="6" style="vertical-align:middle;border-radius:3.0px">
+  <rect width="70" height="6" rx="3.0" fill="#e5e7eb"/>
+  <rect width="16" height="6" rx="3.0" fill="#ef4444"/>
+</svg>
+    </div>
+    <div class="s-comment" style="color:#ef4444">尾音遗漏较多，需要重点练习词尾 -ed、-s/es 的发音</div>
+  </div>
+</div><div class="s-row">
+  <div class="s-head">
+    <span class="s-icon">📈</span>
+    <span class="s-label">单词重音</span>
+  </div>
+  <div class="s-body">
+    <div class="s-barline">
+      <span class="s-val" style="color:#ef4444">0.0/15</span>
+      <svg width="70" height="6" style="vertical-align:middle;border-radius:3.0px">
+  <rect width="70" height="6" rx="3.0" fill="#e5e7eb"/>
+  <rect width="0" height="6" rx="3.0" fill="#ef4444"/>
+</svg>
+    </div>
+    <div class="s-comment" style="color:#ef4444">重音位置需要重点练习，建议用带音标标注的单词表反复练习</div>
+  </div>
+</div><div class="s-row">
+  <div class="s-head">
+    <span class="s-icon">⏸️</span>
+    <span class="s-label">停顿意识</span>
+  </div>
+  <div class="s-body">
+    <div class="s-barline">
+      <span class="s-val" style="color:#f59e0b">9.7/15</span>
+      <svg width="70" height="6" style="vertical-align:middle;border-radius:3.0px">
+  <rect width="70" height="6" rx="3.0" fill="#e5e7eb"/>
+  <rect width="45" height="6" rx="3.0" fill="#f59e0b"/>
+</svg>
+    </div>
+    <div class="s-comment" style="color:#f59e0b">停顿意识还可以加强，注意句号和逗号处的适当停顿</div>
+  </div>
+</div><div class="s-row">
+  <div class="s-head">
+    <span class="s-icon">🔉</span>
+    <span class="s-label">音量清晰</span>
+  </div>
+  <div class="s-body">
+    <div class="s-barline">
+      <span class="s-val" style="color:#f59e0b">6.6/10</span>
+      <svg width="70" height="6" style="vertical-align:middle;border-radius:3.0px">
+  <rect width="70" height="6" rx="3.0" fill="#e5e7eb"/>
+  <rect width="46" height="6" rx="3.0" fill="#f59e0b"/>
+</svg>
+    </div>
+    <div class="s-comment" style="color:#f59e0b">整体清晰度不错，有些单词可以读得再用力一些</div>
+  </div>
+</div><div class="s-row">
+  <div class="s-head">
+    <span class="s-icon">📋</span>
+    <span class="s-label">完整性</span>
+  </div>
+  <div class="s-body">
+    <div class="s-barline">
+      <span class="s-val" style="color:#22c55e">10.0/10</span>
+      <svg width="70" height="6" style="vertical-align:middle;border-radius:3.0px">
+  <rect width="70" height="6" rx="3.0" fill="#e5e7eb"/>
+  <rect width="70" height="6" rx="3.0" fill="#22c55e"/>
+</svg>
+    </div>
+    <div class="s-comment" style="color:#22c55e">朗读完整，没有漏页漏行的情况</div>
+  </div>
+</div></div>
+</div>
+<div class="card result-fail">
+  <div class="result-score">50<span style="font-size:14px;color:rgba(255,255,255,0.7)">/100</span></div>
+  <div class="result-label">❌ 未达到推荐标准</div>
+  <div class="result-detail">通过条件: 总分≥60 且 发音+尾音≥18/50</div>
+</div>
+<div class="card"><h3>📈 综合提升建议</h3>
+  <div class='tip-row'><span class='tip-badge'>💪</span><span class='tip-text'><strong>整体建议</strong>：总分未达标，建议每天朗读15-20分钟，先听原音再跟读，重点关注发音和尾音</span></div><div class='tip-row'><span class='tip-badge tip-1'>①</span><span class='tip-text'><strong>重音</strong>：用词典查多音节词的重音位置，标出重读音节再朗读</span></div><div class='tip-row'><span class='tip-badge tip-2'>②</span><span class='tip-text'><strong>尾音</strong>：着重练习 -ed/-s/-ing 词尾的发音，放慢语速把尾音读清楚</span></div><div class='tip-row'><span class='tip-badge tip-3'>③</span><span class='tip-text'><strong>停顿</strong>：朗读时注意句号和逗号，读到标点处稍作停顿换气</span></div>
+</div>
+<div class="card"><h3>🔍 错误分类统计</h3>
+  <div class="err-grid"><div class="err-cat">
+  <div class="err-cat-head">
+    <span>🔤</span>
+    <span class="err-cat-label">辅音替换</span>
+    <span class="err-cat-count">1次</span>
+  </div>
+  <div class="err-cat-tags"><span class="wtag" style="border-color:#14b8a630;background:#14b8a610;color:#14b8a6">2012</span></div>
+</div><div class="err-cat">
+  <div class="err-cat-head">
+    <span>📖</span>
+    <span class="err-cat-label">功能词 (冠词/介词)</span>
+    <span class="err-cat-count">26次</span>
+  </div>
+  <div class="err-cat-tags"><span class="wtag" style="border-color:#3b82f630;background:#3b82f610;color:#3b82f6">is</span> <span class="wtag" style="border-color:#3b82f630;background:#3b82f610;color:#3b82f6">that</span> <span class="wtag" style="border-color:#3b82f630;background:#3b82f610;color:#3b82f6">at</span> <span class="wtag" style="border-color:#3b82f630;background:#3b82f610;color:#3b82f6">would</span> <span class="wtag" style="border-color:#3b82f630;background:#3b82f610;color:#3b82f6">have</span> <span class="wtag" style="border-color:#3b82f630;background:#3b82f610;color:#3b82f6">and</span> <span class="wtag" style="border-color:#3b82f630;background:#3b82f610;color:#3b82f6">the</span> <span class="wtag" style="border-color:#3b82f630;background:#3b82f610;color:#3b82f6">could</span> <span class="wtag" style="border-color:#3b82f630;background:#3b82f610;color:#3b82f6">their</span> <span class="wtag" style="border-color:#3b82f630;background:#3b82f610;color:#3b82f6">them</span> <span class="wtag" style="border-color:#3b82f630;background:#3b82f610;color:#3b82f6">its</span> <span class="wtag" style="border-color:#3b82f630;background:#3b82f610;color:#3b82f6">they</span></div>
+</div><div class="err-cat">
+  <div class="err-cat-head">
+    <span>🔊</span>
+    <span class="err-cat-label">尾音 -ed</span>
+    <span class="err-cat-count">7次</span>
+  </div>
+  <div class="err-cat-tags"><span class="wtag" style="border-color:#f59e0b30;background:#f59e0b10;color:#f59e0b">showed</span> <span class="wtag" style="border-color:#f59e0b30;background:#f59e0b10;color:#f59e0b">passed</span> <span class="wtag" style="border-color:#f59e0b30;background:#f59e0b10;color:#f59e0b">discovered</span> <span class="wtag" style="border-color:#f59e0b30;background:#f59e0b10;color:#f59e0b">headed</span> <span class="wtag" style="border-color:#f59e0b30;background:#f59e0b10;color:#f59e0b">lined</span> <span class="wtag" style="border-color:#f59e0b30;background:#f59e0b10;color:#f59e0b">planned</span></div>
+</div><div class="err-cat">
+  <div class="err-cat-head">
+    <span>❓</span>
+    <span class="err-cat-label">grammatical_-er</span>
+    <span class="err-cat-count">12次</span>
+  </div>
+  <div class="err-cat-tags"><span class="wtag" style="border-color:#99930;background:#99910;color:#999">jupiter</span> <span class="wtag" style="border-color:#99930;background:#99910;color:#999">voyager</span></div>
+</div><div class="err-cat">
+  <div class="err-cat-head">
+    <span>❓</span>
+    <span class="err-cat-label">grammatical_-est</span>
+    <span class="err-cat-count">2次</span>
+  </div>
+  <div class="err-cat-tags"><span class="wtag" style="border-color:#99930;background:#99910;color:#999">largest</span> <span class="wtag" style="border-color:#99930;background:#99910;color:#999">second-largest</span></div>
+</div><div class="err-cat">
+  <div class="err-cat-head">
+    <span>🔊</span>
+    <span class="err-cat-label">尾音 -ing</span>
+    <span class="err-cat-count">3次</span>
+  </div>
+  <div class="err-cat-tags"><span class="wtag" style="border-color:#f59e0b30;background:#f59e0b10;color:#f59e0b">planning</span> <span class="wtag" style="border-color:#f59e0b30;background:#f59e0b10;color:#f59e0b">ring</span> <span class="wtag" style="border-color:#f59e0b30;background:#f59e0b10;color:#f59e0b">thing</span></div>
+</div><div class="err-cat">
+  <div class="err-cat-head">
+    <span>❓</span>
+    <span class="err-cat-label">grammatical_-ly</span>
+    <span class="err-cat-count">2次</span>
+  </div>
+  <div class="err-cat-tags"><span class="wtag" style="border-color:#99930;background:#99910;color:#999">carefully</span> <span class="wtag" style="border-color:#99930;background:#99910;color:#999">fly</span></div>
+</div><div class="err-cat">
+  <div class="err-cat-head">
+    <span>🔊</span>
+    <span class="err-cat-label">尾音 -s/es</span>
+    <span class="err-cat-count">14次</span>
+  </div>
+  <div class="err-cat-tags"><span class="wtag" style="border-color:#f59e0b30;background:#f59e0b10;color:#f59e0b">system's</span> <span class="wtag" style="border-color:#f59e0b30;background:#f59e0b10;color:#f59e0b">planets</span> <span class="wtag" style="border-color:#f59e0b30;background:#f59e0b10;color:#f59e0b">rings</span> <span class="wtag" style="border-color:#f59e0b30;background:#f59e0b10;color:#f59e0b">speeds</span> <span class="wtag" style="border-color:#f59e0b30;background:#f59e0b10;color:#f59e0b">voyagers</span> <span class="wtag" style="border-color:#f59e0b30;background:#f59e0b10;color:#f59e0b">telescopes</span> <span class="wtag" style="border-color:#f59e0b30;background:#f59e0b10;color:#f59e0b">says</span> <span class="wtag" style="border-color:#f59e0b30;background:#f59e0b10;color:#f59e0b">months</span></div>
+</div><div class="err-cat">
+  <div class="err-cat-head">
+    <span>❓</span>
+    <span class="err-cat-label">其他错误</span>
+    <span class="err-cat-count">65次</span>
+  </div>
+  <div class="err-cat-tags"><span class="wtag" style="border-color:#6b728030;background:#6b728010;color:#6b7280">left</span> <span class="wtag" style="border-color:#6b728030;background:#6b728010;color:#6b7280">system</span> <span class="wtag" style="border-color:#6b728030;background:#6b728010;color:#6b7280">now</span> <span class="wtag" style="border-color:#6b728030;background:#6b728010;color:#6b7280">happen</span> <span class="wtag" style="border-color:#6b728030;background:#6b728010;color:#6b7280">began</span> <span class="wtag" style="border-color:#6b728030;background:#6b728010;color:#6b7280">past</span> <span class="wtag" style="border-color:#6b728030;background:#6b728010;color:#6b7280">toward</span> <span class="wtag" style="border-color:#6b728030;background:#6b728010;color:#6b7280">1</span> <span class="wtag" style="border-color:#6b728030;background:#6b728010;color:#6b7280">forty</span> <span class="wtag" style="border-color:#6b728030;background:#6b728010;color:#6b7280">one</span> <span class="wtag" style="border-color:#6b728030;background:#6b728010;color:#6b7280">stone</span> <span class="wtag" style="border-color:#6b728030;background:#6b728010;color:#6b7280">come</span></div>
+</div><div class="err-cat">
+  <div class="err-cat-head">
+    <span>📈</span>
+    <span class="err-cat-label">多音节词/重音</span>
+    <span class="err-cat-count">7次</span>
+  </div>
+  <div class="err-cat-tags"><span class="wtag" style="border-color:#8b5cf630;background:#8b5cf610;color:#8b5cf6">spacecraft</span> <span class="wtag" style="border-color:#8b5cf630;background:#8b5cf610;color:#8b5cf6">thirty-five</span> <span class="wtag" style="border-color:#8b5cf630;background:#8b5cf610;color:#8b5cf6">jupiter's</span> <span class="wtag" style="border-color:#8b5cf630;background:#8b5cf610;color:#8b5cf6">jupiter</span> <span class="wtag" style="border-color:#8b5cf630;background:#8b5cf610;color:#8b5cf6">uranus</span></div>
+</div><div class="err-cat">
+  <div class="err-cat-head">
+    <span>🔤</span>
+    <span class="err-cat-label">元音替换</span>
+    <span class="err-cat-count">16次</span>
+  </div>
+  <div class="err-cat-tags"><span class="wtag" style="border-color:#ec489930;background:#ec489910;color:#ec4899">flew</span> <span class="wtag" style="border-color:#ec489930;background:#ec489910;color:#ec4899">moons</span> <span class="wtag" style="border-color:#ec489930;background:#ec489910;color:#ec4899">system's</span> <span class="wtag" style="border-color:#ec489930;background:#ec489910;color:#ec4899">system</span> <span class="wtag" style="border-color:#ec489930;background:#ec489910;color:#ec4899">voyagers'</span> <span class="wtag" style="border-color:#ec489930;background:#ec489910;color:#ec4899">one</span> <span class="wtag" style="border-color:#ec489930;background:#ec489910;color:#ec4899">visit</span> <span class="wtag" style="border-color:#ec489930;background:#ec489910;color:#ec4899">saturn</span> <span class="wtag" style="border-color:#ec489930;background:#ec489910;color:#ec4899">near</span> <span class="wtag" style="border-color:#ec489930;background:#ec489910;color:#ec4899">apart</span> <span class="wtag" style="border-color:#ec489930;background:#ec489910;color:#ec4899">began</span> <span class="wtag" style="border-color:#ec489930;background:#ec489910;color:#ec4899">late</span></div>
+</div></div>
+</div>
+<h3 style="font-size:14px;color:#555;margin:10px 12px 6px;display:flex;align-items:center;gap:6px">📄 逐页分析</h3>
+<div class="page">
+  <div class="page-hd">
+    <div class="page-num">1</div>
+    <div class="page-info">
+      <div class="page-acc" style="color:#f59e0b">53.3%</div>
+      <span class="badge sub">替换 13</span> <span class="badge del">漏读 1</span> <span class="badge ins">多读 7</span> <span class="badge" style="background:#6366f1">🎵 声学65%</span> <span class="badge" style="background:#10b981">💨 流利52%</span> 
+    </div>
+  </div>
+  <div class="page-body">
+    <div class="page-text"><span class="w-err">One<span class="w-read">→on</span></span> <span class="w-err">Tough<span class="w-read">→the</span></span> <span class="w-err">Job<span class="w-read">→half-drop</span></span> <span class="w-correct">The</span> <span class="w-correct">United</span> <span class="w-correct">States</span> <span class="w-correct">sent</span> <span class="w-err">two<span class="w-read">→to</span></span> <span class="w-err">Voyager<span class="w-read">→vue</span></span> <span class="w-err">spacecraft<span class="w-read">→gators</span></span> <span class="w-correct">into</span> <span class="w-correct">space</span> <span class="w-correct">in</span> <span class="w-err">1977.<span class="w-read">→1970s</span></span> <span class="w-err">Their<span class="w-read">→and</span></span> <span class="w-err">job<span class="w-read">→half-drop</span></span> <span class="w-correct">was</span> <span class="w-correct">to</span> <span class="w-err">fly<span class="w-read">→bypass</span></span> <span class="w-err">past<span class="w-read">→tempered</span></span> <span class="w-del">Jupiter</span> <span class="w-correct">and</span> <span class="w-err">Saturn,<span class="w-read">→the</span></span> <span class="w-err">two<span class="w-read">→to</span></span> <span class="w-correct">giant</span> <span class="w-correct">planets</span> <span class="w-correct">in</span> <span class="w-correct">our</span> <span class="w-err">solar<span class="w-read">→state</span></span> <span class="w-err">system.<span class="w-read">→of</span></span></div>
+    <div class="ap" style="border-color:#667eea">
+  <span class="ap-icon">🎧</span>
+  <span class="ap-label">原音</span>
+  <audio controls preload="metadata" style="width:100%;height:36px">
+    <source src="https://file-auth.abctime.com/picture/content/audio/base/2023-03-12/2531_p1.mp3?auth_key=1782394112-0-0-65522e3cf39a0c466e231c55e010db0f" type="audio/wav">
+    <source src="https://file-auth.abctime.com/picture/content/audio/base/2023-03-12/2531_p1.mp3?auth_key=1782394112-0-0-65522e3cf39a0c466e231c55e010db0f" type="audio/mpeg">
+  </audio>
+</div><div class="ap" style="border-color:#f093fb">
+  <span class="ap-icon">🎙️</span>
+  <span class="ap-label">跟读</span>
+  <audio controls preload="metadata" style="width:100%;height:36px">
+    <source src="https://oaudios.abctime.com/abcreading/2026/06/25/13046294/books/oss_audio_1782430697150.wav" type="audio/wav">
+    <source src="https://oaudios.abctime.com/abcreading/2026/06/25/13046294/books/oss_audio_1782430697150.wav" type="audio/mpeg">
+  </audio>
+</div>
+  </div>
+</div>
+<div class="page">
+  <div class="page-hd">
+    <div class="page-num">2</div>
+    <div class="page-info">
+      <div class="page-acc" style="color:#22c55e">82.8%</div>
+      <span class="badge sub">替换 5</span> <span class="badge ins">多读 1</span> <span class="badge" style="background:#6366f1">🎵 声学64%</span> <span class="badge" style="background:#10b981">💨 流利77%</span> 
+    </div>
+  </div>
+  <div class="page-body">
+    <div class="page-text"><span class="w-correct">Scientists</span> <span class="w-correct">built</span> <span class="w-correct">the</span> <span class="w-err">Voyagers<span class="w-read">→u-regard</span></span> <span class="w-correct">to</span> <span class="w-correct">be</span> <span class="w-correct">tough.</span> <span class="w-correct">Still,</span> <span class="w-correct">they</span> <span class="w-err">thought<span class="w-read">→got</span></span> <span class="w-correct">the</span> <span class="w-err">Voyagers<span class="w-read">→u-regard</span></span> <span class="w-err">would<span class="w-read">→with</span></span> <span class="w-correct">only</span> <span class="w-correct">work</span> <span class="w-correct">for</span> <span class="w-correct">about</span> <span class="w-correct">five</span> <span class="w-correct">years.</span> <span class="w-correct">More</span> <span class="w-correct">than</span> <span class="w-err">thirty-five<span class="w-read">→35</span></span> <span class="w-correct">years</span> <span class="w-correct">later,</span> <span class="w-correct">both</span> <span class="w-correct">spacecraft</span> <span class="w-correct">are</span> <span class="w-correct">still</span> <span class="w-correct">working.</span></div>
+    <div class="ap" style="border-color:#667eea">
+  <span class="ap-icon">🎧</span>
+  <span class="ap-label">原音</span>
+  <audio controls preload="metadata" style="width:100%;height:36px">
+    <source src="https://file-auth.abctime.com/picture/content/audio/base/2023-03-12/2531_p2.mp3?auth_key=1782394112-0-0-8bbc4be7becfe88aaa88f127fe397b44" type="audio/wav">
+    <source src="https://file-auth.abctime.com/picture/content/audio/base/2023-03-12/2531_p2.mp3?auth_key=1782394112-0-0-8bbc4be7becfe88aaa88f127fe397b44" type="audio/mpeg">
+  </audio>
+</div><div class="ap" style="border-color:#f093fb">
+  <span class="ap-icon">🎙️</span>
+  <span class="ap-label">跟读</span>
+  <audio controls preload="metadata" style="width:100%;height:36px">
+    <source src="https://oaudios.abctime.com/abcreading/2026/06/25/13046294/books/oss_audio_1782430717975.wav" type="audio/wav">
+    <source src="https://oaudios.abctime.com/abcreading/2026/06/25/13046294/books/oss_audio_1782430717975.wav" type="audio/mpeg">
+  </audio>
+</div>
+  </div>
+</div>
+<div class="page">
+  <div class="page-hd">
+    <div class="page-num">3</div>
+    <div class="page-info">
+      <div class="page-acc" style="color:#f59e0b">58.5%</div>
+      <span class="badge sub">替换 23</span> <span class="badge del">漏读 4</span> <span class="badge ins">多读 9</span> <span class="badge" style="background:#6366f1">🎵 声学61%</span> <span class="badge" style="background:#10b981">💨 流利64%</span> 
+    </div>
+  </div>
+  <div class="page-body">
+    <div class="page-text"><span class="w-err">Planning<span class="w-read">→the</span></span> <span class="w-err">The<span class="w-read">→and</span></span> <span class="w-correct">trip</span> <span class="w-correct">was</span> <span class="w-err">carefully<span class="w-read">→scary</span></span> <span class="w-err">planned.<span class="w-read">→for</span></span> <span class="w-err">The<span class="w-read">→and</span></span> <span class="w-err">planets<span class="w-read">→planning</span></span> <span class="w-correct">all</span> <span class="w-del">move</span> <span class="w-correct">around</span> <span class="w-err">the<span class="w-read">→and</span></span> <span class="w-correct">Sun</span> <span class="w-err">at<span class="w-read">→it's</span></span> <span class="w-correct">different</span> <span class="w-err">speeds.<span class="w-read">→speed</span></span> <span class="w-correct">Sometimes</span> <span class="w-err">they<span class="w-read">→you</span></span> <span class="w-correct">are</span> <span class="w-del">on</span> <span class="w-err">the<span class="w-read">→and</span></span> <span class="w-correct">same</span> <span class="w-correct">side</span> <span class="w-correct">of</span> <span class="w-err">the<span class="w-read">→and</span></span> <span class="w-correct">Sun.</span> <span class="w-correct">Sometimes</span> <span class="w-err">they<span class="w-read">→you</span></span> <span class="w-correct">are</span> <span class="w-del">on</span> <span class="w-correct">opposite</span> <span class="w-correct">sides.</span> <span class="w-err">In<span class="w-read">→19th</span></span> <span class="w-err">the<span class="w-read">→and</span></span> <span class="w-err">late<span class="w-read">→10th</span></span> <span class="w-del">1970s,</span> <span class="w-err">the<span class="w-read">→and</span></span> <span class="w-correct">four</span> <span class="w-correct">biggest</span> <span class="w-err">planets<span class="w-read">→planning</span></span> <span class="w-err">in<span class="w-read">→19th</span></span> <span class="w-correct">our</span> <span class="w-err">solar<span class="w-read">→school</span></span> <span class="w-err">system<span class="w-read">→or</span></span> <span class="w-correct">all</span> <span class="w-err">lined<span class="w-read">→i'm</span></span> <span class="w-err">up<span class="w-read">→not</span></span> <span class="w-err">near<span class="w-read">→here</span></span> <span class="w-err">each<span class="w-read">→is</span></span> <span class="w-correct">other.</span> <span class="w-err">They<span class="w-read">→you</span></span> <span class="w-del">were</span> <span class="w-correct">close</span> <span class="w-correct">enough</span> <span class="w-correct">together</span> <span class="w-err">that<span class="w-read">→that's</span></span> <span class="w-err">the<span class="w-read">→and</span></span> <span class="w-err">Voyagers<span class="w-read">→last</span></span> <span class="w-err">could<span class="w-read">→few</span></span> <span class="w-err">visit<span class="w-read">→years</span></span> <span class="w-err">them<span class="w-read">→to</span></span> <span class="w-correct">all</span> <span class="w-err">in<span class="w-read">→19th</span></span> <span class="w-err">one<span class="w-read">→our</span></span> <span class="w-correct">trip.</span></div>
+    <div class="ap" style="border-color:#667eea">
+  <span class="ap-icon">🎧</span>
+  <span class="ap-label">原音</span>
+  <audio controls preload="metadata" style="width:100%;height:36px">
+    <source src="https://file-auth.abctime.com/picture/content/audio/base/2023-03-12/2531_p3.mp3?auth_key=1782394112-0-0-b210fa9423ebab4b50b8b23fabed30c3" type="audio/wav">
+    <source src="https://file-auth.abctime.com/picture/content/audio/base/2023-03-12/2531_p3.mp3?auth_key=1782394112-0-0-b210fa9423ebab4b50b8b23fabed30c3" type="audio/mpeg">
+  </audio>
+</div><div class="ap" style="border-color:#f093fb">
+  <span class="ap-icon">🎙️</span>
+  <span class="ap-label">跟读</span>
+  <audio controls preload="metadata" style="width:100%;height:36px">
+    <source src="https://oaudios.abctime.com/abcreading/2026/06/25/13046294/books/oss_audio_1782430788031.wav" type="audio/wav">
+    <source src="https://oaudios.abctime.com/abcreading/2026/06/25/13046294/books/oss_audio_1782430788031.wav" type="audio/mpeg">
+  </audio>
+</div>
+  </div>
+</div>
+<div class="page">
+  <div class="page-hd">
+    <div class="page-num">4</div>
+    <div class="page-info">
+      <div class="page-acc" style="color:#f59e0b">64.5%</div>
+      <span class="badge sub">替换 6</span> <span class="badge del">漏读 5</span> <span class="badge ins">多读 7</span> <span class="badge" style="background:#6366f1">🎵 声学61%</span> <span class="badge" style="background:#10b981">💨 流利50%</span> 
+    </div>
+  </div>
+  <div class="page-body">
+    <div class="page-text"><span class="w-correct">The</span> <span class="w-correct">Main</span> <span class="w-correct">Task</span> <span class="w-correct">The</span> <span class="w-correct">Voyagers'</span> <span class="w-correct">first</span> <span class="w-correct">job</span> <span class="w-correct">was</span> <span class="w-correct">to</span> <span class="w-correct">study</span> <span class="w-err">Jupiter<span class="w-read">→jumpers</span></span> <span class="w-del">and</span> <span class="w-err">Saturn,<span class="w-read">→scientists</span></span> <span class="w-del">their</span> <span class="w-del">larger</span> <span class="w-del">moons,</span> <span class="w-del">and</span> <span class="w-del">Saturn's</span> <span class="w-correct">rings.</span> <span class="w-correct">As</span> <span class="w-correct">the</span> <span class="w-correct">two</span> <span class="w-correct">spacecraft</span> <span class="w-correct">flew,</span> <span class="w-err">they<span class="w-read">→in</span></span> <span class="w-correct">made</span> <span class="w-correct">discoveries</span> <span class="w-correct">about</span> <span class="w-correct">our</span> <span class="w-err">solar<span class="w-read">→schoolers</span></span> <span class="w-err">system<span class="w-read">→stadium</span></span> <span class="w-correct">.</span></div>
+    <div class="ap" style="border-color:#667eea">
+  <span class="ap-icon">🎧</span>
+  <span class="ap-label">原音</span>
+  <audio controls preload="metadata" style="width:100%;height:36px">
+    <source src="https://file-auth.abctime.com/picture/content/audio/base/2023-03-12/2531_p4.mp3?auth_key=1782394112-0-0-4b09bb48a6d41330183b198091ad8e67" type="audio/wav">
+    <source src="https://file-auth.abctime.com/picture/content/audio/base/2023-03-12/2531_p4.mp3?auth_key=1782394112-0-0-4b09bb48a6d41330183b198091ad8e67" type="audio/mpeg">
+  </audio>
+</div><div class="ap" style="border-color:#f093fb">
+  <span class="ap-icon">🎙️</span>
+  <span class="ap-label">跟读</span>
+  <audio controls preload="metadata" style="width:100%;height:36px">
+    <source src="https://oaudios.abctime.com/abcreading/2026/06/25/13046294/books/oss_audio_1782430826345.wav" type="audio/wav">
+    <source src="https://oaudios.abctime.com/abcreading/2026/06/25/13046294/books/oss_audio_1782430826345.wav" type="audio/mpeg">
+  </audio>
+</div>
+  </div>
+</div>
+<div class="page">
+  <div class="page-hd">
+    <div class="page-num">5</div>
+    <div class="page-info">
+      <div class="page-acc" style="color:#f59e0b">69.5%</div>
+      <span class="badge sub">替换 15</span> <span class="badge del">漏读 3</span> <span class="badge ins">多读 2</span> <span class="badge" style="background:#6366f1">🎵 声学63%</span> <span class="badge" style="background:#10b981">💨 流利66%</span> 
+    </div>
+  </div>
+  <div class="page-body">
+    <div class="page-text"><span class="w-del">Jupiter</span> <span class="w-correct">The</span> <span class="w-err">Voyagers'<span class="w-read">→villagers</span></span> <span class="w-correct">first</span> <span class="w-err">target<span class="w-read">→told</span></span> <span class="w-err">was<span class="w-read">→us</span></span> <span class="w-del">Jupiter,</span> <span class="w-correct">the</span> <span class="w-err">solar<span class="w-read">→villagers</span></span> <span class="w-err">system's<span class="w-read">→were</span></span> <span class="w-err">largest<span class="w-read">→the</span></span> <span class="w-err">planet.<span class="w-read">→soldiers</span></span> <span class="w-correct">People</span> <span class="w-correct">had</span> <span class="w-correct">already</span> <span class="w-correct">seen</span> <span class="w-del">Jupiter</span> <span class="w-correct">through</span> <span class="w-err">telescopes,<span class="w-read">→telescope</span></span> <span class="w-correct">but</span> <span class="w-correct">the</span> <span class="w-err">Voyagers<span class="w-read">→villagers</span></span> <span class="w-correct">gave</span> <span class="w-correct">a</span> <span class="w-correct">much</span> <span class="w-correct">better</span> <span class="w-correct">view.</span> <span class="w-correct">They</span> <span class="w-correct">showed</span> <span class="w-err">that<span class="w-read">→us</span></span> <span class="w-correct">the</span> <span class="w-correct">Great</span> <span class="w-correct">Red</span> <span class="w-correct">Spot</span> <span class="w-err">was<span class="w-read">→us</span></span> <span class="w-correct">a</span> <span class="w-correct">huge,</span> <span class="w-correct">spinning</span> <span class="w-correct">storm.</span> <span class="w-correct">They</span> <span class="w-correct">discovered</span> <span class="w-correct">a</span> <span class="w-err">ring<span class="w-read">→roof</span></span> <span class="w-correct">around</span> <span class="w-del">Jupiter,</span> <span class="w-correct">like</span> <span class="w-correct">the</span> <span class="w-correct">ones</span> <span class="w-correct">around</span> <span class="w-del">Saturn.</span> <span class="w-correct">They</span> <span class="w-correct">also</span> <span class="w-correct">helped</span> <span class="w-correct">scientists</span> <span class="w-correct">learn</span> <span class="w-correct">more</span> <span class="w-correct">about</span> <span class="w-err">Jupiter's<span class="w-read">→jumper-despans</span></span> <span class="w-del">moons.</span></div>
+    <div class="ap" style="border-color:#667eea">
+  <span class="ap-icon">🎧</span>
+  <span class="ap-label">原音</span>
+  <audio controls preload="metadata" style="width:100%;height:36px">
+    <source src="https://file-auth.abctime.com/picture/content/audio/base/2023-03-12/2531_p5.mp3?auth_key=1782394112-0-0-0c994eff14953bfec2526f2ee90c763d" type="audio/wav">
+    <source src="https://file-auth.abctime.com/picture/content/audio/base/2023-03-12/2531_p5.mp3?auth_key=1782394112-0-0-0c994eff14953bfec2526f2ee90c763d" type="audio/mpeg">
+  </audio>
+</div><div class="ap" style="border-color:#f093fb">
+  <span class="ap-icon">🎙️</span>
+  <span class="ap-label">跟读</span>
+  <audio controls preload="metadata" style="width:100%;height:36px">
+    <source src="https://oaudios.abctime.com/abcreading/2026/06/25/13046294/books/oss_audio_1782431055903.wav" type="audio/wav">
+    <source src="https://oaudios.abctime.com/abcreading/2026/06/25/13046294/books/oss_audio_1782431055903.wav" type="audio/mpeg">
+  </audio>
+</div>
+  </div>
+</div>
+<div class="page">
+  <div class="page-hd">
+    <div class="page-num">6</div>
+    <div class="page-info">
+      <div class="page-acc" style="color:#ef4444">48.0%</div>
+      <span class="badge sub">替换 13</span> <span class="badge ins">多读 3</span> <span class="badge" style="background:#6366f1">🎵 声学63%</span> <span class="badge" style="background:#10b981">💨 流利57%</span> 
+    </div>
+  </div>
+  <div class="page-body">
+    <div class="page-text"><span class="w-err">The<span class="w-read">→a</span></span> <span class="w-err">Voyagers<span class="w-read">→villagers</span></span> <span class="w-correct">arrived</span> <span class="w-correct">at</span> <span class="w-err">Saturn<span class="w-read">→sarthu</span></span> <span class="w-err">nine<span class="w-read">→nymoth</span></span> <span class="w-err">months<span class="w-read">→a</span></span> <span class="w-err">apart<span class="w-read">→party</span></span> <span class="w-correct">in</span> <span class="w-correct">1980</span> <span class="w-correct">and</span> <span class="w-correct">1981.</span> <span class="w-correct">They</span> <span class="w-err">took<span class="w-read">→did</span></span> <span class="w-correct">pictures</span> <span class="w-correct">that</span> <span class="w-err">showed<span class="w-read">→just</span></span> <span class="w-err">new<span class="w-read">→you</span></span> <span class="w-err">rings<span class="w-read">→raise</span></span> <span class="w-correct">around</span> <span class="w-err">the<span class="w-read">→a</span></span> <span class="w-err">solar<span class="w-read">→school</span></span> <span class="w-err">system's<span class="w-read">→or</span></span> <span class="w-err">second-largest<span class="w-read">→a</span></span> <span class="w-correct">planet.</span></div>
+    <div class="ap" style="border-color:#667eea">
+  <span class="ap-icon">🎧</span>
+  <span class="ap-label">原音</span>
+  <audio controls preload="metadata" style="width:100%;height:36px">
+    <source src="https://file-auth.abctime.com/picture/content/audio/base/2023-03-12/2531_p6.mp3?auth_key=1782394112-0-0-cfc7549a33b3a5a237d6aeeaa92f407d" type="audio/wav">
+    <source src="https://file-auth.abctime.com/picture/content/audio/base/2023-03-12/2531_p6.mp3?auth_key=1782394112-0-0-cfc7549a33b3a5a237d6aeeaa92f407d" type="audio/mpeg">
+  </audio>
+</div><div class="ap" style="border-color:#f093fb">
+  <span class="ap-icon">🎙️</span>
+  <span class="ap-label">跟读</span>
+  <audio controls preload="metadata" style="width:100%;height:36px">
+    <source src="https://oaudios.abctime.com/abcreading/2026/06/25/13046294/books/oss_audio_1782431081524.wav" type="audio/wav">
+    <source src="https://oaudios.abctime.com/abcreading/2026/06/25/13046294/books/oss_audio_1782431081524.wav" type="audio/mpeg">
+  </audio>
+</div>
+  </div>
+</div>
+<div class="page">
+  <div class="page-hd">
+    <div class="page-num">7</div>
+    <div class="page-info">
+      <div class="page-acc" style="color:#ef4444">42.4%</div>
+      <span class="badge sub">替换 18</span> <span class="badge del">漏读 1</span> <span class="badge ins">多读 3</span> <span class="badge" style="background:#6366f1">🎵 声学66%</span> <span class="badge" style="background:#10b981">💨 流利69%</span> 
+    </div>
+  </div>
+  <div class="page-body">
+    <div class="page-text"><span class="w-err">Uranus<span class="w-read">→uns</span></span> <span class="w-correct">After</span> <span class="w-correct">passing</span> <span class="w-err">Saturn,<span class="w-read">→start</span></span> <span class="w-err">Voyager<span class="w-read">→to</span></span> <span class="w-err">1<span class="w-read">→uns</span></span> <span class="w-err">headed<span class="w-read">→uns</span></span> <span class="w-err">toward<span class="w-read">→had</span></span> <span class="w-correct">deep</span> <span class="w-correct">space.</span> <span class="w-err">Voyager<span class="w-read">→to</span></span> <span class="w-err">2<span class="w-read">→blow-in-jers</span></span> <span class="w-err">kept<span class="w-read">→to</span></span> <span class="w-correct">going</span> <span class="w-err">toward<span class="w-read">→had</span></span> <span class="w-err">Uranus.<span class="w-read">→uns</span></span> <span class="w-err">This<span class="w-read">→these</span></span> <span class="w-correct">strange</span> <span class="w-err">light<span class="w-read">→large</span></span> <span class="w-correct">blue</span> <span class="w-err">planet<span class="w-read">→planets</span></span> <span class="w-err">is<span class="w-read">→trapped</span></span> <span class="w-del">tipped</span> <span class="w-correct">on</span> <span class="w-correct">its</span> <span class="w-correct">side.</span> <span class="w-err">Voyager<span class="w-read">→to</span></span> <span class="w-err">2<span class="w-read">→blow-in-jers</span></span> <span class="w-err">passed<span class="w-read">→pass</span></span> <span class="w-err">Uranus<span class="w-read">→uns</span></span> <span class="w-correct">in</span> <span class="w-correct">early</span> <span class="w-correct">1986.</span></div>
+    <div class="ap" style="border-color:#667eea">
+  <span class="ap-icon">🎧</span>
+  <span class="ap-label">原音</span>
+  <audio controls preload="metadata" style="width:100%;height:36px">
+    <source src="https://file-auth.abctime.com/picture/content/audio/base/2023-03-12/2531_p7.mp3?auth_key=1782394112-0-0-45469ae9483540a5426c30e2bf3c6ef0" type="audio/wav">
+    <source src="https://file-auth.abctime.com/picture/content/audio/base/2023-03-12/2531_p7.mp3?auth_key=1782394112-0-0-45469ae9483540a5426c30e2bf3c6ef0" type="audio/mpeg">
+  </audio>
+</div><div class="ap" style="border-color:#f093fb">
+  <span class="ap-icon">🎙️</span>
+  <span class="ap-label">跟读</span>
+  <audio controls preload="metadata" style="width:100%;height:36px">
+    <source src="https://oaudios.abctime.com/abcreading/2026/06/25/13046294/books/oss_audio_1782431108536.wav" type="audio/wav">
+    <source src="https://oaudios.abctime.com/abcreading/2026/06/25/13046294/books/oss_audio_1782431108536.wav" type="audio/mpeg">
+  </audio>
+</div>
+  </div>
+</div>
+<div class="page">
+  <div class="page-hd">
+    <div class="page-num">8</div>
+    <div class="page-info">
+      <div class="page-acc" style="color:#ef4444">43.8%</div>
+      <span class="badge sub">替换 18</span> <span class="badge ins">多读 5</span> <span class="badge" style="background:#6366f1">🎵 声学64%</span> <span class="badge" style="background:#10b981">💨 流利60%</span> 
+    </div>
+  </div>
+  <div class="page-body">
+    <div class="page-text"><span class="w-correct">Neptune</span> <span class="w-correct">Next,</span> <span class="w-err">Voyager<span class="w-read">→voyander</span></span> <span class="w-err">2<span class="w-read">→one</span></span> <span class="w-err">flew<span class="w-read">→fuse</span></span> <span class="w-err">toward<span class="w-read">→to</span></span> <span class="w-correct">Neptune.</span> <span class="w-err">It<span class="w-read">→it's</span></span> <span class="w-err">passed<span class="w-read">→past</span></span> <span class="w-err">the<span class="w-read">→la</span></span> <span class="w-err">planet<span class="w-read">→planets</span></span> <span class="w-err">in<span class="w-read">→on</span></span> <span class="w-correct">August</span> <span class="w-correct">of</span> <span class="w-correct">1989</span> <span class="w-correct">and</span> <span class="w-err">discovered<span class="w-read">→discover</span></span> <span class="w-err">five<span class="w-read">→5</span></span> <span class="w-correct">new</span> <span class="w-err">moons.<span class="w-read">→moves</span></span> <span class="w-correct">Then,</span> <span class="w-correct">like</span> <span class="w-err">Voyager<span class="w-read">→voyander</span></span> <span class="w-err">1,<span class="w-read">→and</span></span> <span class="w-err">Voyager<span class="w-read">→voyander</span></span> <span class="w-err">2<span class="w-read">→one</span></span> <span class="w-err">began<span class="w-read">→you</span></span> <span class="w-err">its<span class="w-read">→and</span></span> <span class="w-correct">journey</span> <span class="w-err">toward<span class="w-read">→to</span></span> <span class="w-correct">deep</span> <span class="w-correct">space.</span></div>
+    <div class="ap" style="border-color:#667eea">
+  <span class="ap-icon">🎧</span>
+  <span class="ap-label">原音</span>
+  <audio controls preload="metadata" style="width:100%;height:36px">
+    <source src="https://file-auth.abctime.com/picture/content/audio/base/2023-03-12/2531_p8.mp3?auth_key=1782394112-0-0-7c4a9634d59fcfabfb55e30599758b0e" type="audio/wav">
+    <source src="https://file-auth.abctime.com/picture/content/audio/base/2023-03-12/2531_p8.mp3?auth_key=1782394112-0-0-7c4a9634d59fcfabfb55e30599758b0e" type="audio/mpeg">
+  </audio>
+</div><div class="ap" style="border-color:#f093fb">
+  <span class="ap-icon">🎙️</span>
+  <span class="ap-label">跟读</span>
+  <audio controls preload="metadata" style="width:100%;height:36px">
+    <source src="https://oaudios.abctime.com/abcreading/2026/06/25/13046294/books/oss_audio_1782431260832.wav" type="audio/wav">
+    <source src="https://oaudios.abctime.com/abcreading/2026/06/25/13046294/books/oss_audio_1782431260832.wav" type="audio/mpeg">
+  </audio>
+</div>
+  </div>
+</div>
+<div class="page">
+  <div class="page-hd">
+    <div class="page-num">9</div>
+    <div class="page-info">
+      <div class="page-acc" style="color:#22c55e">96.4%</div>
+      <span class="badge sub">替换 2</span> <span class="badge" style="background:#6366f1">🎵 声学64%</span> <span class="badge" style="background:#10b981">💨 流利71%</span> 
+    </div>
+  </div>
+  <div class="page-body">
+    <div class="page-text"><span class="w-err">The<span class="w-read">→a</span></span> <span class="w-correct">Golden</span> <span class="w-correct">Record</span> <span class="w-err">The<span class="w-read">→a</span></span> <span class="w-err">Voyagers<span class="w-read">→blender</span></span> <span class="w-correct">aren't</span> <span class="w-correct">just</span> <span class="w-correct">collecting</span> <span class="w-correct">information.</span> <span class="w-correct">They</span> <span class="w-correct">are</span> <span class="w-correct">also</span> <span class="w-correct">carrying</span> <span class="w-correct">a</span> <span class="w-correct">message.</span> <span class="w-correct">It's</span> <span class="w-correct">a</span> <span class="w-correct">greeting</span> <span class="w-correct">to</span> <span class="w-correct">other</span> <span class="w-correct">living</span> <span class="w-correct">things</span> <span class="w-correct">that</span> <span class="w-correct">may</span> <span class="w-correct">be</span> <span class="w-correct">in</span> <span class="w-correct">space.</span> <span class="w-err">The<span class="w-read">→a</span></span> <span class="w-correct">message</span> <span class="w-correct">is</span> <span class="w-correct">on</span> <span class="w-correct">a</span> <span class="w-correct">“Golden</span> <span class="w-correct">Record”</span> <span class="w-correct">on</span> <span class="w-err">the<span class="w-read">→a</span></span> <span class="w-correct">side</span> <span class="w-correct">of</span> <span class="w-correct">each</span> <span class="w-correct">spacecraft.</span> <span class="w-err">The<span class="w-read">→a</span></span> <span class="w-correct">record</span> <span class="w-correct">has</span> <span class="w-correct">music,</span> <span class="w-correct">art,</span> <span class="w-correct">and</span> <span class="w-correct">people</span> <span class="w-correct">from</span> <span class="w-correct">around</span> <span class="w-err">the<span class="w-read">→a</span></span> <span class="w-correct">world</span> <span class="w-correct">saying</span> <span class="w-correct">“hello”</span> <span class="w-correct">on</span> <span class="w-correct">it.</span></div>
+    <div class="ap" style="border-color:#667eea">
+  <span class="ap-icon">🎧</span>
+  <span class="ap-label">原音</span>
+  <audio controls preload="metadata" style="width:100%;height:36px">
+    <source src="https://file-auth.abctime.com/picture/content/audio/base/2023-03-12/2531_p9.mp3?auth_key=1782394112-0-0-4d6e51096959596d08832bcc5598318a" type="audio/wav">
+    <source src="https://file-auth.abctime.com/picture/content/audio/base/2023-03-12/2531_p9.mp3?auth_key=1782394112-0-0-4d6e51096959596d08832bcc5598318a" type="audio/mpeg">
+  </audio>
+</div><div class="ap" style="border-color:#f093fb">
+  <span class="ap-icon">🎙️</span>
+  <span class="ap-label">跟读</span>
+  <audio controls preload="metadata" style="width:100%;height:36px">
+    <source src="https://oaudios.abctime.com/abcreading/2026/06/25/13046294/books/oss_audio_1782431303270.wav" type="audio/wav">
+    <source src="https://oaudios.abctime.com/abcreading/2026/06/25/13046294/books/oss_audio_1782431303270.wav" type="audio/mpeg">
+  </audio>
+</div>
+  </div>
+</div>
+<div class="page">
+  <div class="page-hd">
+    <div class="page-num">10</div>
+    <div class="page-info">
+      <div class="page-acc" style="color:#f59e0b">65.9%</div>
+      <span class="badge sub">替换 14</span> <span class="badge del">漏读 1</span> <span class="badge ins">多读 4</span> <span class="badge" style="background:#6366f1">🎵 声学65%</span> <span class="badge" style="background:#10b981">💨 流利70%</span> 
+    </div>
+  </div>
+  <div class="page-body">
+    <div class="page-text"><span class="w-del">The</span> <span class="w-correct">outside</span> <span class="w-correct">of</span> <span class="w-del">the</span> <span class="w-correct">record</span> <span class="w-correct">has</span> <span class="w-correct">a</span> <span class="w-correct">map</span> <span class="w-err">that<span class="w-read">→that's</span></span> <span class="w-correct">shows</span> <span class="w-correct">where</span> <span class="w-correct">Earth</span> <span class="w-correct">is.</span> <span class="w-correct">Other</span> <span class="w-err">living<span class="w-read">→leaving</span></span> <span class="w-correct">things</span> <span class="w-correct">could</span> <span class="w-correct">use</span> <span class="w-del">the</span> <span class="w-correct">map</span> <span class="w-correct">to</span> <span class="w-correct">find</span> <span class="w-err">our<span class="w-read">→or</span></span> <span class="w-err">planet,<span class="w-read">→plan</span></span> <span class="w-correct">but</span> <span class="w-err">that<span class="w-read">→that's</span></span> <span class="w-correct">probably</span> <span class="w-err">won't<span class="w-read">→what</span></span> <span class="w-err">happen<span class="w-read">→happens</span></span> <span class="w-err">soon.<span class="w-read">→to</span></span> <span class="w-err">Voyager<span class="w-read">→them</span></span> <span class="w-err">1<span class="w-read">→wonders</span></span> <span class="w-err">won't<span class="w-read">→what</span></span> <span class="w-err">come<span class="w-read">→wooden</span></span> <span class="w-correct">close</span> <span class="w-correct">to</span> <span class="w-correct">another</span> <span class="w-err">star<span class="w-read">→steve</span></span> <span class="w-correct">for</span> <span class="w-correct">at</span> <span class="w-correct">least</span> <span class="w-err">forty<span class="w-read">→40</span></span> <span class="w-err">thousand<span class="w-read">→000</span></span> <span class="w-correct">years!</span></div>
+    <div class="ap" style="border-color:#667eea">
+  <span class="ap-icon">🎧</span>
+  <span class="ap-label">原音</span>
+  <audio controls preload="metadata" style="width:100%;height:36px">
+    <source src="https://file-auth.abctime.com/picture/content/audio/base/2023-03-12/2531_p10.mp3?auth_key=1782394112-0-0-92dba14ccaf741714356a03bc0a63cdd" type="audio/wav">
+    <source src="https://file-auth.abctime.com/picture/content/audio/base/2023-03-12/2531_p10.mp3?auth_key=1782394112-0-0-92dba14ccaf741714356a03bc0a63cdd" type="audio/mpeg">
+  </audio>
+</div><div class="ap" style="border-color:#f093fb">
+  <span class="ap-icon">🎙️</span>
+  <span class="ap-label">跟读</span>
+  <audio controls preload="metadata" style="width:100%;height:36px">
+    <source src="https://oaudios.abctime.com/abcreading/2026/06/25/13046294/books/oss_audio_1782431339292.wav" type="audio/wav">
+    <source src="https://oaudios.abctime.com/abcreading/2026/06/25/13046294/books/oss_audio_1782431339292.wav" type="audio/mpeg">
+  </audio>
+</div>
+  </div>
+</div>
+<div class="page">
+  <div class="page-hd">
+    <div class="page-num">11</div>
+    <div class="page-info">
+      <div class="page-acc" style="color:#f59e0b">69.1%</div>
+      <span class="badge sub">替换 17</span> <span class="badge ins">多读 2</span> <span class="badge" style="background:#6366f1">🎵 声学65%</span> <span class="badge" style="background:#10b981">💨 流利63%</span> 
+    </div>
+  </div>
+  <div class="page-body">
+    <div class="page-text"><span class="w-correct">The</span> <span class="w-correct">Final</span> <span class="w-correct">Task</span> <span class="w-correct">Now</span> <span class="w-err">that<span class="w-read">→that's</span></span> <span class="w-correct">the</span> <span class="w-err">Voyagers<span class="w-read">→u</span></span> <span class="w-err">have<span class="w-read">→m</span></span> <span class="w-correct">finished</span> <span class="w-correct">exploring</span> <span class="w-correct">planets,</span> <span class="w-correct">they</span> <span class="w-err">have<span class="w-read">→m</span></span> <span class="w-correct">a</span> <span class="w-correct">new</span> <span class="w-correct">task.</span> <span class="w-err">Their<span class="w-read">→the</span></span> <span class="w-correct">job</span> <span class="w-correct">is</span> <span class="w-correct">to</span> <span class="w-correct">explore</span> <span class="w-correct">space</span> <span class="w-correct">beyond</span> <span class="w-correct">our</span> <span class="w-err">solar<span class="w-read">→schoolers'</span></span> <span class="w-err">system.<span class="w-read">→stadium</span></span> <span class="w-correct">In</span> <span class="w-correct">August</span> <span class="w-err">2012,<span class="w-read">→2020</span></span> <span class="w-err">Voyager<span class="w-read">→voyagers</span></span> <span class="w-err">1<span class="w-read">→won't</span></span> <span class="w-err">left<span class="w-read">→let</span></span> <span class="w-correct">our</span> <span class="w-err">solar<span class="w-read">→schoolers'</span></span> <span class="w-err">system<span class="w-read">→stadium</span></span> <span class="w-err">and<span class="w-read">→begin</span></span> <span class="w-err">began<span class="w-read">→begin</span></span> <span class="w-correct">this</span> <span class="w-correct">new</span> <span class="w-correct">journey.</span> <span class="w-correct">The</span> <span class="w-correct">spacecraft</span> <span class="w-correct">is</span> <span class="w-correct">the</span> <span class="w-correct">first</span> <span class="w-err">thing<span class="w-read">→scene</span></span> <span class="w-correct">made</span> <span class="w-correct">by</span> <span class="w-correct">people</span> <span class="w-correct">ever</span> <span class="w-correct">to</span> <span class="w-correct">leave</span> <span class="w-correct">our</span> <span class="w-err">solar<span class="w-read">→schoolers'</span></span> <span class="w-err">system.<span class="w-read">→stadium</span></span></div>
+    <div class="ap" style="border-color:#667eea">
+  <span class="ap-icon">🎧</span>
+  <span class="ap-label">原音</span>
+  <audio controls preload="metadata" style="width:100%;height:36px">
+    <source src="https://file-auth.abctime.com/picture/content/audio/base/2023-03-12/2531_p11.mp3?auth_key=1782394112-0-0-49aff7a2467a6ba67248862e60e8a769" type="audio/wav">
+    <source src="https://file-auth.abctime.com/picture/content/audio/base/2023-03-12/2531_p11.mp3?auth_key=1782394112-0-0-49aff7a2467a6ba67248862e60e8a769" type="audio/mpeg">
+  </audio>
+</div><div class="ap" style="border-color:#f093fb">
+  <span class="ap-icon">🎙️</span>
+  <span class="ap-label">跟读</span>
+  <audio controls preload="metadata" style="width:100%;height:36px">
+    <source src="https://oaudios.abctime.com/abcreading/2026/06/25/13046294/books/oss_audio_1782431387601.wav" type="audio/wav">
+    <source src="https://oaudios.abctime.com/abcreading/2026/06/25/13046294/books/oss_audio_1782431387601.wav" type="audio/mpeg">
+  </audio>
+</div>
+  </div>
+</div>
+<div class="page">
+  <div class="page-hd">
+    <div class="page-num">12</div>
+    <div class="page-info">
+      <div class="page-acc" style="color:#f59e0b">72.9%</div>
+      <span class="badge sub">替换 11</span> <span class="badge del">漏读 2</span> <span class="badge ins">多读 2</span> <span class="badge" style="background:#6366f1">🎵 声学63%</span> <span class="badge" style="background:#10b981">💨 流利78%</span> 
+    </div>
+  </div>
+  <div class="page-body">
+    <div class="page-text"><span class="w-correct">Conclusion</span> <span class="w-err">Voyager<span class="w-read">→yunders</span></span> <span class="w-correct">“has</span> <span class="w-correct">opened</span> <span class="w-correct">up</span> <span class="w-correct">our</span> <span class="w-err">solar<span class="w-read">→schoolers</span></span> <span class="w-correct">system,”</span> <span class="w-err">says<span class="w-read">→see</span></span> <span class="w-correct">project</span> <span class="w-correct">scientist</span> <span class="w-err">Dr<span class="w-read">→dear</span></span> <span class="w-correct">.</span> <span class="w-err">Edward<span class="w-read">→it</span></span> <span class="w-err">Stone.<span class="w-read">→was</span></span> <span class="w-del">The</span> <span class="w-correct">two</span> <span class="w-correct">spacecraft</span> <span class="w-correct">flew</span> <span class="w-correct">past</span> <span class="w-correct">all</span> <span class="w-correct">of</span> <span class="w-del">the</span> <span class="w-err">solar<span class="w-read">→schoolers</span></span> <span class="w-err">system's<span class="w-read">→stadiums</span></span> <span class="w-correct">giant</span> <span class="w-correct">outer</span> <span class="w-correct">planets</span> <span class="w-correct">and</span> <span class="w-correct">many</span> <span class="w-err">moons.<span class="w-read">→moves</span></span> <span class="w-err">Now<span class="w-read">→yunders</span></span> <span class="w-del">the</span> <span class="w-del">Voyagers</span> <span class="w-correct">are</span> <span class="w-correct">giving</span> <span class="w-correct">us</span> <span class="w-correct">a</span> <span class="w-correct">first</span> <span class="w-correct">look</span> <span class="w-correct">at</span> <span class="w-correct">deep</span> <span class="w-correct">space</span> <span class="w-correct">while</span> <span class="w-correct">carrying</span> <span class="w-correct">a</span> <span class="w-correct">message</span> <span class="w-correct">from</span> <span class="w-correct">Earth.</span></div>
+    <div class="ap" style="border-color:#667eea">
+  <span class="ap-icon">🎧</span>
+  <span class="ap-label">原音</span>
+  <audio controls preload="metadata" style="width:100%;height:36px">
+    <source src="https://file-auth.abctime.com/picture/content/audio/base/2023-03-12/2531_p12.mp3?auth_key=1782394112-0-0-c545578c0136a8d7d0a460209999ff3e" type="audio/wav">
+    <source src="https://file-auth.abctime.com/picture/content/audio/base/2023-03-12/2531_p12.mp3?auth_key=1782394112-0-0-c545578c0136a8d7d0a460209999ff3e" type="audio/mpeg">
+  </audio>
+</div><div class="ap" style="border-color:#f093fb">
+  <span class="ap-icon">🎙️</span>
+  <span class="ap-label">跟读</span>
+  <audio controls preload="metadata" style="width:100%;height:36px">
+    <source src="https://oaudios.abctime.com/abcreading/2026/06/25/13046294/books/oss_audio_1782431426941.wav" type="audio/wav">
+    <source src="https://oaudios.abctime.com/abcreading/2026/06/25/13046294/books/oss_audio_1782431426941.wav" type="audio/mpeg">
+  </audio>
+</div>
+  </div>
+</div>
+<div class="card"><h3>🏋️ 专项训练</h3><div class="train-block">
+  <div class="train-title">🔊 尾音训练: -ed</div>
+  <div class="train-desc">你有 7 次漏读或读错 -ed 结尾。试试下面这些词：</div>
+            <div class="train-words"><span class="tw">showed</span><span class="tw">passed</span><span class="tw">discovered</span><span class="tw">headed</span><span class="tw">lined</span><span class="tw">planned</span></div>
+            <div class="train-sentence">📝 请慢读以下单词，注意-ed尾音不要漏掉：showed · passed · discovered · headed · lined · planned</div>
+</div><div class="train-block">
+  <div class="train-title">🔊 尾音训练: -ing</div>
+  <div class="train-desc">你有 3 次漏读或读错 -ing 结尾。试试下面这些词：</div>
+            <div class="train-words"><span class="tw">planning</span><span class="tw">ring</span><span class="tw">thing</span></div>
+            <div class="train-sentence">📝 请慢读以下单词，注意-ing尾音不要漏掉：planning · ring · thing</div>
+</div><div class="train-block">
+  <div class="train-title">🔊 尾音训练: -s/es</div>
+  <div class="train-desc">你有 14 次漏读或读错 -s/es 结尾。试试下面这些词：</div>
+            <div class="train-words"><span class="tw">system's</span><span class="tw">planets</span><span class="tw">speeds</span><span class="tw">voyagers</span><span class="tw">telescopes</span></div>
+            <div class="train-sentence">📝 请慢读以下单词，注意-s/es尾音不要漏掉：system's · planets · speeds · voyagers · telescopes</div>
+</div><div class="train-block">
+  <div class="train-title">📖 高频词专项训练</div>
+  <div class="train-desc">你有 26 次读错高频功能词（冠词/介词/代词）。这些词虽小但很重要！</div>
+            <div class="train-words"><span class="tw fw">their</span><span class="tw fw">would</span><span class="tw fw">at</span><span class="tw fw">in</span><span class="tw fw">the</span></div><div class="train-sentences"><div class="ts">🔊 Look at the stars. She is at home.</div><div class="ts">🔊 The book is in the bag. She lives in a big city.</div><div class="ts">🔊 The cat sat on the mat. The dog ran to the park.</div></div>
+</div><div class="train-block">
+  <div class="train-title">🎯 疑难词汇集中训练</div>
+  <div class="train-desc">以下是你多次读错的「顽固词」——建议反复跟读标准录音：</div>
+            <div class="train-grid"><div class="tw-card"><strong>voyager</strong><span class="tw-err">读成: vue, to</span><span class="tw-n">×10</span></div><div class="tw-card"><strong>solar</strong><span class="tw-err">读成: state, school</span><span class="tw-n">×10</span></div><div class="tw-card"><strong>system</strong><span class="tw-err">读成: of, or</span><span class="tw-n">×7</span></div><div class="tw-card"><strong>voyagers</strong><span class="tw-err">读成: u-regard, u-giger</span><span class="tw-n">×7</span></div><div class="tw-card"><strong>saturn</strong><span class="tw-err">读成: the, scientists</span><span class="tw-n">×4</span></div><div class="tw-card"><strong>the</strong><span class="tw-err">读成: and, a</span><span class="tw-n">×4</span></div><div class="tw-card"><strong>that</strong><span class="tw-err">读成: that's, us</span><span class="tw-n">×4</span></div><div class="tw-card"><strong>jupiter</strong><span class="tw-err">读成: jumpers, what</span><span class="tw-n">×4</span></div><div class="tw-card"><strong>planet</strong><span class="tw-err">读成: soldiers, planets</span><span class="tw-n">×4</span></div><div class="tw-card"><strong>1</strong><span class="tw-err">读成: uns, and</span><span class="tw-n">×4</span></div></div>
+</div><div class="train-block">
+  <div class="train-title">⏭️ 漏读提醒</div>
+  <div class="train-desc">以下是容易漏读的词——朗读时请放慢速度，确保每个词都读到：</div>
+            <div class="train-words"><span class="tw da">jupiter</span><span class="tw da">moons</span><span class="tw da">the</span><span class="tw da">move</span><span class="tw da">on</span></div>
+            <div class="train-tip">💡 建议：朗读时手指指读，每读完一个词才移到下一个。</div>
+</div></div>
+<div class="card disclaimer">
+  <h4>⚠️ 评分说明</h4>
+  <p>⚠️ 发音准确率、尾音保留率、重音正确率为基于文本难度的预估分，仅供参考。真实发音质量需通过人工聆听或语音识别(ASR)确认。建议家长对照原声逐句检查，重点关注'发音难点词'和'尾音重点词'。</p>
+</div>
+<div class="footer">ABC Reading Evaluator v3.0 · 2026-06-26 08:32</div>
+</div>
+</body>
+</html>
